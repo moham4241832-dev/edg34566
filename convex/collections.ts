@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
+import { internal } from "./_generated/api";
 import { ConvexError } from "convex/values";
 
 // إضافة عملية تحصيل جديدة
@@ -142,6 +143,7 @@ export const getAllCollections = query({
           ...collection,
           customerName: customer?.name || "غير معروف",
           customerPhone: customer?.phone || "",
+          customerRegion: customer?.region || "غير محدد",
           salesPersonName: salesPerson?.fullName || "غير معروف",
         };
       })

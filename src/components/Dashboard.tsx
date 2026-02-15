@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { CustomerManagement } from "./CustomerManagement";
+import { CustomerCard } from "./CustomerCard";
 import { CollectionTracking } from "./CollectionTracking";
 import { AdminPanel } from "./AdminPanel";
 import { SignOutButton } from "../SignOutButton";
@@ -87,7 +88,9 @@ export function Dashboard() {
           </div>
 
           {/* المحتوى */}
-          {activeTab === "customers" && <CustomerManagement />}
+          {activeTab === "customers" && (
+            isAdmin ? <CustomerManagement /> : <CustomerCard />
+          )}
           {activeTab === "collections" && <CollectionTracking />}
           {activeTab === "admin" && isAdmin && <AdminPanel />}
         </div>

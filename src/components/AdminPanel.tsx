@@ -3,6 +3,9 @@ import { api } from "../../convex/_generated/api";
 import { UserManagement } from "./UserManagement";
 import { AdminCollectionStats } from "./AdminCollectionStats";
 import { WeeklyReport } from "./WeeklyReport";
+import { CustomerManagementWithOverdue } from "./CustomerManagementWithOverdue";
+import { OverdueExcelUpdater } from "./OverdueExcelUpdater";
+import { FixOverdueButton } from "./FixOverdueButton";
 import * as XLSX from "xlsx";
 import { toast } from "sonner";
 import { useState, useRef } from "react";
@@ -11,8 +14,11 @@ export function AdminPanel() {
   const allCollections = useQuery(api.collections.getAllCollections);
   const allCustomers = useQuery(api.customers.listAllCustomers);
   const importCustomers = useMutation(api.customers.importCustomers);
+  const updateCustomersFromExcel = useMutation(api.customers.updateCustomersFromExcel);
   const [isImporting, setIsImporting] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const updateFileInputRef = useRef<HTMLInputElement>(null);
 
   const handleExportToExcel = () => {
     if (!allCollections || !allCustomers) {
@@ -25,6 +31,7 @@ export function AdminPanel() {
         "التاريخ": new Date(c.collectionDate).toLocaleDateString("ar-EG"),
         "اسم العميل": c.customerName,
         "رقم الهاتف": c.customerPhone,
+        "المنطقة": c.customerRegion || "-",
         "ذهب (جرام)": c.goldAmount.toFixed(2),
         "نقدية (جنيه)": c.cashAmount.toFixed(2),
         "موظف المبيعات": c.salesPersonName,
@@ -34,6 +41,7 @@ export function AdminPanel() {
       const customersData = allCustomers.map((c) => ({
         "اسم العميل": c.name,
         "رقم الهاتف": c.phone,
+        "المنطقة": c.region,
         "مديونية ذهب (جرام)": c.goldDebt21.toFixed(2),
         "مديونية نقدية (جنيه)": c.cashDebt.toFixed(2),
         "موظف المبيعات": c.salesPersonName || "-",
@@ -69,6 +77,7 @@ export function AdminPanel() {
       const customers = jsonData.map((row: any) => ({
         name: row["اسم العميل"] || row["name"] || "",
         phone: String(row["رقم الهاتف"] || row["phone"] || ""),
+        region: row["المنطقة"] || row["region"] || "غير محدد",
         goldDebt21: parseFloat(row["مديونية ذهب (جرام)"] || row["goldDebt21"] || "0"),
         cashDebt: parseFloat(row["مديونية نقدية (جنيه)"] || row["cashDebt"] || "0"),
       }));
@@ -88,13 +97,57 @@ export function AdminPanel() {
     }
   };
 
+  const handleUpdateFromExcel = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUpdating(true);
+    try {
+      const data = await file.arrayBuffer();
+      const workbook = XLSX.read(data);
+      const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+      const customers = jsonData.map((row: any) => ({
+        name: row["اسم العميل"] || row["name"] || "",
+        phone: String(row["رقم الهاتف"] || row["phone"] || ""),
+        region: row["المنطقة"] || row["region"] || "غير محدد",
+        goldDebt21: parseFloat(row["مديونية ذهب (جرام)"] || row["goldDebt21"] || "0"),
+        cashDebt: parseFloat(row["مديونية نقدية (جنيه)"] || row["cashDebt"] || "0"),
+      }));
+
+      const result = await updateCustomersFromExcel({ customers });
+      
+      let message = "";
+      if (result.updated > 0) message += `تم تحديث ${result.updated} عميل. `;
+      if (result.created > 0) message += `تم إضافة ${result.created} عميل جديد. `;
+      if (result.failed > 0) message += `فشل ${result.failed} عميل.`;
+      
+      toast.success(message || "تم التحديث بنجاح! ✅");
+      
+      if (result.errors.length > 0) {
+        console.log("Errors:", result.errors);
+      }
+      
+      if (updateFileInputRef.current) {
+        updateFileInputRef.current.value = "";
+      }
+    } catch (error) {
+      console.error("Error updating from Excel:", error);
+      const message = error instanceof Error ? error.message : "حدث خطأ أثناء التحديث";
+      toast.error(message);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center flex-wrap gap-4">
         <h2 className="text-3xl font-bold bg-gradient-to-l from-purple-600 to-pink-600 bg-clip-text text-transparent">
           👑 لوحة تحكم المدير
         </h2>
-        <div className="flex gap-3">
+        <div className="flex gap-3 flex-wrap">
           <label className="px-6 py-3 bg-gradient-to-l from-blue-500 to-indigo-600 text-white rounded-xl font-bold hover:shadow-xl transform hover:scale-105 transition-all flex items-center gap-2 cursor-pointer">
             <svg
               className="w-5 h-5"
@@ -109,7 +162,7 @@ export function AdminPanel() {
                 d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
               />
             </svg>
-            {isImporting ? "جاري الاستيراد..." : "استيراد Excel"}
+            {isImporting ? "جاري الاستيراد..." : "استيراد جديد"}
             <input
               ref={fileInputRef}
               type="file"
@@ -119,6 +172,32 @@ export function AdminPanel() {
               className="hidden"
             />
           </label>
+          
+          <label className="px-6 py-3 bg-gradient-to-l from-purple-500 to-pink-600 text-white rounded-xl font-bold hover:shadow-xl transform hover:scale-105 transition-all flex items-center gap-2 cursor-pointer">
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              />
+            </svg>
+            {isUpdating ? "جاري التحديث..." : "تحديث Excel"}
+            <input
+              ref={updateFileInputRef}
+              type="file"
+              accept=".xlsx,.xls"
+              onChange={handleUpdateFromExcel}
+              disabled={isUpdating}
+              className="hidden"
+            />
+          </label>
+          
           <button
             onClick={handleExportToExcel}
             className="px-6 py-3 bg-gradient-to-l from-green-500 to-emerald-600 text-white rounded-xl font-bold hover:shadow-xl transform hover:scale-105 transition-all flex items-center gap-2"
@@ -138,11 +217,24 @@ export function AdminPanel() {
             </svg>
             تصدير Excel
           </button>
+          
+          <FixOverdueButton />
         </div>
+      </div>
+
+      <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4">
+        <h3 className="font-bold text-blue-900 mb-2">💡 كيفية استخدام التحديث من Excel:</h3>
+        <ul className="text-sm text-blue-800 space-y-1">
+          <li>• <strong>استيراد جديد:</strong> يضيف عملاء جدد فقط (يتجاهل الأرقام المكررة)</li>
+          <li>• <strong>تحديث Excel:</strong> يحدث بيانات العملاء الموجودين ويضيف الجدد</li>
+          <li>• يجب أن يحتوي الملف على: اسم العميل، رقم الهاتف، المنطقة، مديونية ذهب، مديونية نقدية</li>
+        </ul>
       </div>
 
       <AdminCollectionStats />
       <WeeklyReport />
+      <CustomerManagementWithOverdue />
+      <OverdueExcelUpdater />
       <UserManagement />
     </div>
   );

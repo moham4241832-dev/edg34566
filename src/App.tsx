@@ -8,11 +8,13 @@ import { WeeklyReport } from "./components/WeeklyReport";
 import { AdminPanel } from "./components/AdminPanel";
 import { ExcelImport } from "./components/ExcelImport";
 import { SignOutButton } from "./SignOutButton";
+import { NotificationBell } from "./components/NotificationBell";
 import { useState } from "react";
 import { Toaster } from "sonner";
 import { Logo3D } from "./components/Logo3D";
+import { SalesManagement } from "./components/SalesManagement";
 
-type Tab = "dashboard" | "customers" | "collections" | "reports" | "admin" | "import";
+type Tab = "dashboard" | "customers" | "collections" | "reports" | "admin" | "import" | "sales";
 
 function App() {
   const [activeTab, setActiveTab] = useState<Tab>("dashboard");
@@ -39,6 +41,7 @@ function App() {
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
+                  <NotificationBell />
                   <div className="text-left">
                     <p className="text-sm font-semibold text-gray-900">
                       {currentUser?.fullName || currentUser?.email}
@@ -107,6 +110,16 @@ function App() {
                 >
                   📈 التقارير
                 </button>
+                <button
+                  onClick={() => setActiveTab("sales")}
+                  className={`px-6 py-3 rounded-xl font-bold transition-all whitespace-nowrap ${
+                    activeTab === "sales"
+                      ? "bg-gradient-to-l from-amber-500 to-yellow-600 text-white shadow-lg transform scale-105"
+                      : "bg-white text-gray-700 hover:bg-amber-50 hover:text-amber-700"
+                  }`}
+                >
+                  📊 المبيعات
+                </button>
                 {isAdmin && (
                   <button
                     onClick={() => setActiveTab("admin")}
@@ -130,6 +143,7 @@ function App() {
             {activeTab === "import" && <ExcelImport />}
             {activeTab === "collections" && <CollectionTracking />}
             {activeTab === "reports" && <WeeklyReport />}
+            {activeTab === "sales" && <SalesManagement />}
             {activeTab === "admin" && isAdmin && <AdminPanel />}
           </main>
 

@@ -4,7 +4,13 @@ import { api } from "../../convex/_generated/api";
 import { toast } from "sonner";
 import { Id } from "../../convex/_generated/dataModel";
 
-export function CustomerManagement() {
+// Helper function to safely convert overdue values to numbers
+const toNumber = (val: number | boolean | undefined): number => {
+  if (typeof val === 'number') return val;
+  return 0;
+};
+
+export function CustomerManagementWithOverdue() {
   const [isAdding, setIsAdding] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState<Id<"customers"> | null>(null);
   const [formData, setFormData] = useState({
@@ -13,16 +19,15 @@ export function CustomerManagement() {
     region: "",
     goldDebt21: 0,
     cashDebt: 0,
-    creditLimit: 0,
     salesPersonId: "" as Id<"users"> | "",
   });
 
   const customers = useQuery(api.customers.listAllCustomers);
   const salespeople = useQuery(api.users.listSalespeople);
+  const overdueStatuses = useQuery(api.overdue.getAllOverdueStatuses);
   const addCustomer = useMutation(api.customers.addCustomer);
   const updateCustomer = useMutation(api.customers.updateCustomer);
   const deleteCustomer = useMutation(api.customers.deleteCustomer);
-  const deleteAllCustomers = useMutation(api.customers.deleteAllCustomers);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,7 +46,6 @@ export function CustomerManagement() {
           region: formData.region,
           goldDebt21: formData.goldDebt21,
           cashDebt: formData.cashDebt,
-          creditLimit: formData.creditLimit,
           salesPersonId: formData.salesPersonId as Id<"users">,
         });
         toast.success("تم تحديث العميل بنجاح! ✅");
@@ -53,7 +57,6 @@ export function CustomerManagement() {
           region: formData.region,
           goldDebt21: formData.goldDebt21,
           cashDebt: formData.cashDebt,
-          creditLimit: formData.creditLimit,
           salesPersonId: formData.salesPersonId as Id<"users">,
         });
         toast.success("تم إضافة العميل بنجاح! 🎉");
@@ -65,7 +68,6 @@ export function CustomerManagement() {
         region: "",
         goldDebt21: 0,
         cashDebt: 0,
-        creditLimit: 0,
         salesPersonId: "",
       });
       setIsAdding(false);
@@ -82,7 +84,6 @@ export function CustomerManagement() {
       region: customer.region,
       goldDebt21: customer.goldDebt21,
       cashDebt: customer.cashDebt,
-      creditLimit: customer.creditLimit || 0,
       salesPersonId: customer.salesPersonId,
     });
     setEditingCustomer(customer._id);
@@ -110,23 +111,8 @@ export function CustomerManagement() {
       region: "",
       goldDebt21: 0,
       cashDebt: 0,
-      creditLimit: 0,
       salesPersonId: "",
     });
-  };
-
-  const handleDeleteAll = async () => {
-    if (!confirm("⚠️ تحذير: هل أنت متأكد من حذف جميع العملاء؟\n\nسيتم حذف:\n- جميع العملاء\n- جميع التحصيلات المرتبطة بهم\n\nهذا الإجراء لا يمكن التراجع عنه!")) {
-      return;
-    }
-
-    try {
-      const result = await deleteAllCustomers({});
-      toast.success(`تم حذف ${result.deletedCustomers} عميل و ${result.deletedCollections} تحصيل بنجاح! 🗑️`);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "حدث خطأ";
-      toast.error(message);
-    }
   };
 
   if (!customers || !salespeople) {
@@ -136,6 +122,12 @@ export function CustomerManagement() {
       </div>
     );
   }
+
+  // ربط المتأخرات بالعملاء
+  const customersWithOverdue = customers.map(customer => {
+    const overdue = overdueStatuses?.find(o => o.customerId === customer._id);
+    return { ...customer, overdue };
+  });
 
   return (
     <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl shadow-xl p-6 border-2 border-blue-200">
@@ -153,27 +145,15 @@ export function CustomerManagement() {
         </div>
 
         {!isAdding && (
-          <div className="flex gap-3">
-            <button
-              onClick={() => setIsAdding(true)}
-            className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
+          <button
+            onClick={() => setIsAdding(true)}
+            className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold rounded-full hover:from-blue-600 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl hover:scale-110 flex items-center justify-center"
+            title="إضافة عميل"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
-            إضافة عميل جديد
           </button>
-            
-            <button
-              onClick={handleDeleteAll}
-              className="px-6 py-3 bg-gradient-to-r from-red-500 to-rose-600 text-white font-bold rounded-xl hover:from-red-600 hover:to-rose-700 transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-              </svg>
-              مسح الكل
-            </button>
-          </div>
         )}
       </div>
 
@@ -272,20 +252,6 @@ export function CustomerManagement() {
                   placeholder="0.00"
                 />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  الحد الائتماني (جنيه) 💳
-                </label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={formData.creditLimit}
-                  onChange={(e) => setFormData({ ...formData, creditLimit: parseFloat(e.target.value) || 0 })}
-                  className="w-full px-4 py-3 rounded-lg border-2 border-amber-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 transition-all"
-                  placeholder="0.00"
-                />
-                <p className="text-xs text-gray-500 mt-1">الحد الأقصى للمديونية المسموح بها</p>
-              </div>
             </div>
 
             <div className="flex gap-3">
@@ -322,17 +288,23 @@ export function CustomerManagement() {
           </div>
         ) : (
           <div className="space-y-3 max-h-[600px] overflow-y-auto">
-            {customers.map((customer) => {
+            {customersWithOverdue.map((customer) => {
               const salesPerson = salespeople.find(sp => sp._id === customer.salesPersonId);
+              const overdue = customer.overdue;
 
               return (
                 <div
                   key={customer._id}
-                  className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl p-4 hover:shadow-lg transition-all border border-blue-100"
+                  className="bg-white rounded-2xl p-5 hover:shadow-2xl transition-all duration-300 border-2 border-blue-100 hover:border-blue-300 transform hover:-translate-y-1"
                 >
-                  <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
-                      <h5 className="text-lg font-bold text-gray-900 mb-1">{customer.name}</h5>
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                          {customer.name.charAt(0)}
+                        </div>
+                        <h5 className="text-xl font-bold text-gray-900">{customer.name}</h5>
+                      </div>
                       <p className="text-sm text-gray-600 flex items-center gap-2 mb-1">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
@@ -359,7 +331,7 @@ export function CustomerManagement() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleEdit(customer)}
-                        className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-all"
+                        className="p-2.5 bg-gradient-to-br from-blue-50 to-blue-100 text-blue-600 rounded-xl hover:from-blue-100 hover:to-blue-200 transition-all shadow-sm hover:shadow-md"
                         title="تعديل"
                       >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -368,7 +340,7 @@ export function CustomerManagement() {
                       </button>
                       <button
                         onClick={() => handleDelete(customer._id)}
-                        className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-all"
+                        className="p-2.5 bg-gradient-to-br from-red-50 to-red-100 text-red-600 rounded-xl hover:from-red-100 hover:to-red-200 transition-all shadow-sm hover:shadow-md"
                         title="حذف"
                       >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -379,18 +351,70 @@ export function CustomerManagement() {
                   </div>
 
                   {/* المديونيات */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-lg p-3 border border-amber-200">
+                  <div className="grid grid-cols-2 gap-3 mb-4">
+                    <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-xl p-4 border-2 border-amber-200 shadow-sm">
                       <p className="text-xs font-medium text-amber-800 mb-1">مديونية ذهب</p>
                       <p className="text-xl font-bold text-amber-900">{customer.goldDebt21.toFixed(2)}</p>
                       <p className="text-xs text-amber-700">جرام عيار 21</p>
                     </div>
-                    <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-3 border border-green-200">
+                    <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border-2 border-green-200 shadow-sm">
                       <p className="text-xs font-medium text-green-800 mb-1">مديونية نقدية</p>
                       <p className="text-xl font-bold text-green-900">{customer.cashDebt.toFixed(2)}</p>
                       <p className="text-xs text-green-700">جنيه مصري</p>
                     </div>
                   </div>
+
+                  {/* المتأخرات */}
+                  {overdue && (
+                    <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-4 border-2 border-purple-200 shadow-sm">
+                      <h6 className="text-sm font-bold text-purple-900 mb-3 flex items-center gap-2">
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                        </svg>
+                        المتأخرات
+                      </h6>
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        {/* ذهب */}
+                        <div className="space-y-1">
+                          <p className="font-semibold text-amber-800">ذهب:</p>
+                          {toNumber(overdue.goldOverdue25) > 0 && (
+                            <p className="text-green-700">🟢 0-25: {toNumber(overdue.goldOverdue25).toFixed(2)} جم</p>
+                          )}
+                          {toNumber(overdue.goldOverdue40) > 0 && (
+                            <p className="text-blue-700">🔵 0-40: {toNumber(overdue.goldOverdue40).toFixed(2)} جم</p>
+                          )}
+                          {toNumber(overdue.goldOverdue60) > 0 && (
+                            <p className="text-yellow-700">🟡 0-60: {toNumber(overdue.goldOverdue60).toFixed(2)} جم</p>
+                          )}
+                          {toNumber(overdue.goldOverdue90) > 0 && (
+                            <p className="text-orange-700">🟠 0-90: {toNumber(overdue.goldOverdue90).toFixed(2)} جم</p>
+                          )}
+                          {toNumber(overdue.goldOverdue90Plus) > 0 && (
+                            <p className="text-red-700">🔴 +90: {toNumber(overdue.goldOverdue90Plus).toFixed(2)} جم</p>
+                          )}
+                        </div>
+                        {/* نقدي */}
+                        <div className="space-y-1">
+                          <p className="font-semibold text-green-800">نقدي:</p>
+                          {typeof overdue.cashOverdue25 === 'number' && overdue.cashOverdue25 > 0 && (
+                            <p className="text-green-700">🟢 0-25: {overdue.cashOverdue25.toFixed(2)} ج</p>
+                          )}
+                          {typeof overdue.cashOverdue40 === 'number' && overdue.cashOverdue40 > 0 && (
+                            <p className="text-blue-700">🔵 0-40: {overdue.cashOverdue40.toFixed(2)} ج</p>
+                          )}
+                          {typeof overdue.cashOverdue60 === 'number' && overdue.cashOverdue60 > 0 && (
+                            <p className="text-yellow-700">🟡 0-60: {overdue.cashOverdue60.toFixed(2)} ج</p>
+                          )}
+                          {typeof overdue.cashOverdue90 === 'number' && overdue.cashOverdue90 > 0 && (
+                            <p className="text-orange-700">🟠 0-90: {overdue.cashOverdue90.toFixed(2)} ج</p>
+                          )}
+                          {overdue.cashOverdue90Plus && typeof overdue.cashOverdue90Plus === 'number' && overdue.cashOverdue90Plus > 0 && (
+                            <p className="text-red-700">🔴 +90: {overdue.cashOverdue90Plus.toFixed(2)} ج</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })}
