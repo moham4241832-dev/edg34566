@@ -3,10 +3,14 @@ import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { AddCollectionModal } from "./AddCollectionModal";
 import { Id } from "../../convex/_generated/dataModel";
+import { OverdueStatusModal } from "./OverdueStatusModal";
 
 export function CustomerCard() {
   const customers = useQuery(api.customers.listMyCustomers);
+  const overdueStatuses = useQuery(api.overdue.getAllOverdueStatuses);
   const [selectedCustomerId, setSelectedCustomerId] = useState<Id<"customers"> | null>(null);
+  const [selectedOverdueCustomerId, setSelectedOverdueCustomerId] = useState<Id<"customers"> | null>(null);
+  const [selectedOverdueCustomerName, setSelectedOverdueCustomerName] = useState<string>("");
 
   if (!customers) {
     return (
@@ -35,10 +39,25 @@ export function CustomerCard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {customers.map((customer) => {
           const creditLimit = customer.creditLimit || 0;
-          const cashDebt = customer.cashDebt || 0;
-          const creditUsagePercent = creditLimit > 0 ? (cashDebt / creditLimit) * 100 : 0;
-          const isOverLimit = cashDebt >= creditLimit && creditLimit > 0;
+          const goldDebt = customer.goldDebt21 || 0;
+          const creditUsagePercent = creditLimit > 0 ? (goldDebt / creditLimit) * 100 : 0;
+          const isOverLimit = goldDebt >= creditLimit && creditLimit > 0;
           const isNearLimit = creditUsagePercent >= 80 && creditUsagePercent < 100;
+          
+          // البحث عن حالة المتأخرات لهذا العميل
+          const overdueStatus = overdueStatuses?.find(s => s.customerId === customer._id);
+          const hasOverdue = overdueStatus && (
+            (typeof overdueStatus.goldOverdue25 === 'number' && overdueStatus.goldOverdue25 > 0) ||
+            (typeof overdueStatus.cashOverdue25 === 'number' && overdueStatus.cashOverdue25 > 0) ||
+            (typeof overdueStatus.goldOverdue40 === 'number' && overdueStatus.goldOverdue40 > 0) ||
+            (typeof overdueStatus.cashOverdue40 === 'number' && overdueStatus.cashOverdue40 > 0) ||
+            (typeof overdueStatus.goldOverdue60 === 'number' && overdueStatus.goldOverdue60 > 0) ||
+            (typeof overdueStatus.cashOverdue60 === 'number' && overdueStatus.cashOverdue60 > 0) ||
+            (typeof overdueStatus.goldOverdue90 === 'number' && overdueStatus.goldOverdue90 > 0) ||
+            (typeof overdueStatus.cashOverdue90 === 'number' && overdueStatus.cashOverdue90 > 0) ||
+            (typeof overdueStatus.goldOverdue90Plus === 'number' && overdueStatus.goldOverdue90Plus > 0) ||
+            (typeof overdueStatus.cashOverdue90Plus === 'number' && overdueStatus.cashOverdue90Plus > 0)
+          );
 
           return (
             <div
@@ -95,7 +114,7 @@ export function CustomerCard() {
 
               {/* الحد الائتماني */}
               {creditLimit > 0 && (
-                <div className={`rounded-xl p-3 border ${
+                <div className={`rounded-xl p-3 border mb-4 ${
                   isOverLimit 
                     ? 'bg-gradient-to-br from-red-50 to-rose-50 border-red-300'
                     : isNearLimit
@@ -116,11 +135,10 @@ export function CustomerCard() {
                     <div className="text-end">
                       <p className={`text-sm font-bold ${
                         isOverLimit ? 'text-red-900' : isNearLimit ? 'text-orange-900' : 'text-purple-900'
-                      }`}>{creditLimit.toFixed(2)} ج.م</p>
+                      }`}>{creditLimit.toFixed(2)} جرام</p>
                     </div>
                   </div>
 
-                  {/* شريط التقدم */}
                   <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
                     <div 
                       className={`h-2 rounded-full transition-all ${
@@ -143,14 +161,135 @@ export function CustomerCard() {
                         : 'text-green-600'
                     }`}>
                       {isOverLimit 
-                        ? `⚠️ تجاوز بـ ${(cashDebt - creditLimit).toFixed(2)} ج.م` 
-                        : `متبقي ${(creditLimit - cashDebt).toFixed(2)} ج.م`}
+                        ? `⚠️ تجاوز بـ ${(goldDebt - creditLimit).toFixed(2)} جرام` 
+                        : `متبقي ${(creditLimit - goldDebt).toFixed(2)} جرام`}
                     </p>
                     <p className={`text-xs font-medium ${
                       isOverLimit ? 'text-red-700' : isNearLimit ? 'text-orange-700' : 'text-purple-700'
                     }`}>
                       {creditUsagePercent.toFixed(0)}%
                     </p>
+                  </div>
+                </div>
+              )}
+
+              {/* المتأخرات - عرض تفصيلي */}
+              {hasOverdue && overdueStatus && (
+                <div className="bg-gradient-to-br from-rose-50 to-red-50 border-2 border-rose-300 rounded-xl p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <svg className="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span className="text-sm font-bold text-rose-900">المتأخرات</span>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setSelectedOverdueCustomerId(customer._id);
+                        setSelectedOverdueCustomerName(customer.name);
+                      }}
+                      className="text-xs px-3 py-1.5 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition-all font-semibold"
+                    >
+                      عرض الكل
+                    </button>
+                  </div>
+
+                  <div className="space-y-2">
+                    {/* متأخرات الذهب */}
+                    {((typeof overdueStatus.goldOverdue25 === 'number' && overdueStatus.goldOverdue25 > 0) || 
+                      (typeof overdueStatus.goldOverdue40 === 'number' && overdueStatus.goldOverdue40 > 0) || 
+                      (typeof overdueStatus.goldOverdue60 === 'number' && overdueStatus.goldOverdue60 > 0) || 
+                      (typeof overdueStatus.goldOverdue90 === 'number' && overdueStatus.goldOverdue90 > 0) || 
+                      (typeof overdueStatus.goldOverdue90Plus === 'number' && overdueStatus.goldOverdue90Plus > 0)) && (
+                      <div className="bg-white rounded-lg p-2">
+                        <div className="flex items-center gap-1 mb-1.5">
+                          <svg className="w-3.5 h-3.5 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6z" />
+                          </svg>
+                          <span className="text-xs font-bold text-amber-900">ذهب (جرام)</span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-1.5 text-xs">
+                          {typeof overdueStatus.goldOverdue25 === 'number' && overdueStatus.goldOverdue25 > 0 && (
+                            <div className="flex justify-between bg-green-50 rounded px-2 py-1">
+                              <span className="text-gray-600">🟢 25 يوم</span>
+                              <span className="font-bold text-green-700">{typeof overdueStatus.goldOverdue25 === 'number' ? overdueStatus.goldOverdue25.toFixed(1) : '0.0'}</span>
+                            </div>
+                          )}
+                          {typeof overdueStatus.goldOverdue40 === 'number' && overdueStatus.goldOverdue40 > 0 && (
+                            <div className="flex justify-between bg-blue-50 rounded px-2 py-1">
+                              <span className="text-gray-600">🔵 40 يوم</span>
+                              <span className="font-bold text-blue-700">{typeof overdueStatus.goldOverdue40 === 'number' ? overdueStatus.goldOverdue40.toFixed(1) : '0.0'}</span>
+                            </div>
+                          )}
+                          {typeof overdueStatus.goldOverdue60 === 'number' && overdueStatus.goldOverdue60 > 0 && (
+                            <div className="flex justify-between bg-yellow-50 rounded px-2 py-1">
+                              <span className="text-gray-600">🟡 60 يوم</span>
+                              <span className="font-bold text-yellow-700">{typeof overdueStatus.goldOverdue60 === 'number' ? overdueStatus.goldOverdue60.toFixed(1) : '0.0'}</span>
+                            </div>
+                          )}
+                          {typeof overdueStatus.goldOverdue90 === 'number' && overdueStatus.goldOverdue90 > 0 && (
+                            <div className="flex justify-between bg-orange-50 rounded px-2 py-1">
+                              <span className="text-gray-600">🟠 90 يوم</span>
+                              <span className="font-bold text-orange-700">{typeof overdueStatus.goldOverdue90 === 'number' ? overdueStatus.goldOverdue90.toFixed(1) : '0.0'}</span>
+                            </div>
+                          )}
+                          {typeof overdueStatus.goldOverdue90Plus === 'number' && overdueStatus.goldOverdue90Plus > 0 && (
+                            <div className="flex justify-between bg-red-50 rounded px-2 py-1 col-span-2">
+                              <span className="text-gray-600">🔴 +90 يوم</span>
+                              <span className="font-bold text-red-700">{typeof overdueStatus.goldOverdue90Plus === 'number' ? overdueStatus.goldOverdue90Plus.toFixed(1) : '0.0'}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* متأخرات نقدية */}
+                    {((typeof overdueStatus.cashOverdue25 === 'number' && overdueStatus.cashOverdue25 > 0) || 
+                      (typeof overdueStatus.cashOverdue40 === 'number' && overdueStatus.cashOverdue40 > 0) || 
+                      (typeof overdueStatus.cashOverdue60 === 'number' && overdueStatus.cashOverdue60 > 0) || 
+                      (typeof overdueStatus.cashOverdue90 === 'number' && overdueStatus.cashOverdue90 > 0) || 
+                      (typeof overdueStatus.cashOverdue90Plus === 'number' && overdueStatus.cashOverdue90Plus > 0)) && (
+                      <div className="bg-white rounded-lg p-2">
+                        <div className="flex items-center gap-1 mb-1.5">
+                          <svg className="w-3.5 h-3.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span className="text-xs font-bold text-green-900">نقدي (ج.م)</span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-1.5 text-xs">
+                          {typeof overdueStatus.cashOverdue25 === 'number' && overdueStatus.cashOverdue25 > 0 && (
+                            <div className="flex justify-between bg-green-50 rounded px-2 py-1">
+                              <span className="text-gray-600">🟢 25 يوم</span>
+                              <span className="font-bold text-green-700">{typeof overdueStatus.cashOverdue25 === 'number' ? overdueStatus.cashOverdue25.toFixed(0) : '0'}</span>
+                            </div>
+                          )}
+                          {typeof overdueStatus.cashOverdue40 === 'number' && overdueStatus.cashOverdue40 > 0 && (
+                            <div className="flex justify-between bg-blue-50 rounded px-2 py-1">
+                              <span className="text-gray-600">🔵 40 يوم</span>
+                              <span className="font-bold text-blue-700">{typeof overdueStatus.cashOverdue40 === 'number' ? overdueStatus.cashOverdue40.toFixed(0) : '0'}</span>
+                            </div>
+                          )}
+                          {typeof overdueStatus.cashOverdue60 === 'number' && overdueStatus.cashOverdue60 > 0 && (
+                            <div className="flex justify-between bg-yellow-50 rounded px-2 py-1">
+                              <span className="text-gray-600">🟡 60 يوم</span>
+                              <span className="font-bold text-yellow-700">{typeof overdueStatus.cashOverdue60 === 'number' ? overdueStatus.cashOverdue60.toFixed(0) : '0'}</span>
+                            </div>
+                          )}
+                          {typeof overdueStatus.cashOverdue90 === 'number' && overdueStatus.cashOverdue90 > 0 && (
+                            <div className="flex justify-between bg-orange-50 rounded px-2 py-1">
+                              <span className="text-gray-600">🟠 90 يوم</span>
+                              <span className="font-bold text-orange-700">{typeof overdueStatus.cashOverdue90 === 'number' ? overdueStatus.cashOverdue90.toFixed(0) : '0'}</span>
+                            </div>
+                          )}
+                          {typeof overdueStatus.cashOverdue90Plus === 'number' && overdueStatus.cashOverdue90Plus > 0 && (
+                            <div className="flex justify-between bg-red-50 rounded px-2 py-1 col-span-2">
+                              <span className="text-gray-600">🔴 +90 يوم</span>
+                              <span className="font-bold text-red-700">{typeof overdueStatus.cashOverdue90Plus === 'number' ? overdueStatus.cashOverdue90Plus.toFixed(0) : '0'}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -163,6 +302,15 @@ export function CustomerCard() {
         <AddCollectionModal
           customerId={selectedCustomerId}
           onClose={() => setSelectedCustomerId(null)}
+        />
+      )}
+
+      {selectedOverdueCustomerId && (
+        <OverdueStatusModal
+          customerId={selectedOverdueCustomerId}
+          customerName={selectedOverdueCustomerName}
+          onClose={() => setSelectedOverdueCustomerId(null)}
+          currentStatus={overdueStatuses?.find(s => s.customerId === selectedOverdueCustomerId)}
         />
       )}
     </>

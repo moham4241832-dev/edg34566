@@ -89,6 +89,7 @@ export function ExcelImport() {
         const region = String(row["المنطقة"] || row["region"] || "").trim();
         const goldDebt21 = parseFloat(row["مديونية ذهب"] || row["goldDebt21"] || "0");
         const cashDebt = parseFloat(row["مديونية نقدية"] || row["cashDebt"] || "0");
+        const creditLimit = parseFloat(row["الحد الائتماني"] || row["creditLimit"] || "0");
         
         const customer: any = {
           name,
@@ -96,6 +97,7 @@ export function ExcelImport() {
           region,
           goldDebt21: isNaN(goldDebt21) ? 0 : goldDebt21,
           cashDebt: isNaN(cashDebt) ? 0 : cashDebt,
+          creditLimit: isNaN(creditLimit) ? 0 : creditLimit,
         };
         
         if (isAdmin && selectedSalesPerson) {
@@ -157,6 +159,7 @@ export function ExcelImport() {
         const region = String(row["المنطقة"] || row["region"] || "").trim();
         const goldDebt21 = parseFloat(row["مديونية ذهب"] || row["goldDebt21"] || "0");
         const cashDebt = parseFloat(row["مديونية نقدية"] || row["cashDebt"] || "0");
+        const creditLimit = parseFloat(row["الحد الائتماني"] || row["creditLimit"] || "0");
         
         const customer: any = {
           name,
@@ -164,6 +167,7 @@ export function ExcelImport() {
           region,
           goldDebt21: isNaN(goldDebt21) ? 0 : goldDebt21,
           cashDebt: isNaN(cashDebt) ? 0 : cashDebt,
+          creditLimit: isNaN(creditLimit) ? 0 : creditLimit,
         };
         
         if (isAdmin && selectedSalesPerson) {
@@ -209,6 +213,7 @@ export function ExcelImport() {
         "المنطقة": "المعادي",
         "مديونية ذهب": 50.5,
         "مديونية نقدية": 10000,
+        "الحد الائتماني": 100,
       },
       {
         "اسم العميل": "محمد علي",
@@ -216,6 +221,7 @@ export function ExcelImport() {
         "المنطقة": "مدينة نصر",
         "مديونية ذهب": 30.25,
         "مديونية نقدية": 5000,
+        "الحد الائتماني": 75,
       },
     ];
 
@@ -225,6 +231,7 @@ export function ExcelImport() {
 
     ws["!cols"] = [
       { wch: 20 },
+      { wch: 15 },
       { wch: 15 },
       { wch: 15 },
       { wch: 15 },
@@ -266,7 +273,7 @@ export function ExcelImport() {
             تحديث البيانات
           </h3>
           <p className="text-gray-700 mb-3">
-            يحدّث بيانات العملاء الموجودين (بناءً على الاسم) ويضيف الجدد.
+            يحدّث بيانات العملاء الموجودين (بناءً على رقم الهاتف) ويضيف الجدد.
           </p>
           <div className="bg-white rounded-xl p-3 text-sm text-gray-600">
             <strong>متى تستخدمه:</strong> للتحديث اليومي من نفس ملف Excel
@@ -363,6 +370,9 @@ export function ExcelImport() {
                   <th className="px-4 py-3 text-right text-sm font-bold text-gray-700">
                     مديونية نقدية
                   </th>
+                  <th className="px-4 py-3 text-right text-sm font-bold text-gray-700">
+                    الحد الائتماني
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -382,6 +392,9 @@ export function ExcelImport() {
                     </td>
                     <td className="px-4 py-3 text-sm text-green-600 font-semibold">
                       {row["مديونية نقدية"] || row["cashDebt"] || 0} جنيه
+                    </td>
+                    <td className="px-4 py-3 text-sm text-purple-600 font-semibold">
+                      {row["الحد الائتماني"] || row["creditLimit"] || 0} جرام
                     </td>
                   </tr>
                 ))}
