@@ -33,7 +33,10 @@ export function CustomerManagement() {
   const customers = useQuery(api.customers.listAllCustomers);
   const salespeople = useQuery(api.users.listSalespeople);
   const overdueStatuses = useQuery(api.overdue.getAllOverdueStatuses);
+  const currentUser = useQuery(api.users.getCurrentUser);
   const addCustomer = useMutation(api.customers.addCustomer);
+  
+  const isAdmin = currentUser?.role === "admin";
   const updateCustomer = useMutation(api.customers.updateCustomer);
   const deleteCustomer = useMutation(api.customers.deleteCustomer);
   const deleteAllCustomers = useMutation(api.customers.deleteAllCustomers);
@@ -189,7 +192,7 @@ export function CustomerManagement() {
               </div>
             </div>
 
-            {!isAdding && (
+            {!isAdding && isAdmin && (
             <div className="flex gap-3">
               <button
                 onClick={() => setIsAdding(true)}
@@ -469,8 +472,9 @@ export function CustomerManagement() {
                         )}
                       </div>
 
-                      <div className="flex gap-2">
-                        <button
+                      {isAdmin && (
+                        <div className="flex gap-2">
+                          <button
                           onClick={() => handleEdit(customer)}
                           className="p-2.5 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all shadow-md hover:shadow-lg transform hover:scale-110"
                           title="تعديل"
@@ -488,7 +492,8 @@ export function CustomerManagement() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                           </svg>
                         </button>
-                      </div>
+                        </div>
+                      )}
                     </div>
 
                     {/* المديونيات */}

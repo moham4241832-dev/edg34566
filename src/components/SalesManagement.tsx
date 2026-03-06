@@ -9,8 +9,11 @@ export function SalesManagement() {
 
   const salesByBranch = useQuery(api.sales.getSalesByBranch);
   const salesBySalesperson = useQuery(api.sales.getSalesBySalesperson);
+  const currentUser = useQuery(api.users.getCurrentUser);
   const importSales = useMutation(api.sales.importSales);
   const clearAllSales = useMutation(api.sales.clearAllSales);
+  
+  const isAdmin = currentUser?.role === "admin";
 
   // تحميل ملف Excel نموذجي
   const downloadTemplate = () => {
@@ -145,7 +148,8 @@ export function SalesManagement() {
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-3">
+        {isAdmin && (
+          <div className="flex flex-wrap gap-3">
           <button
             onClick={downloadTemplate}
             className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-xl hover:from-green-600 hover:to-emerald-700 transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
@@ -210,6 +214,7 @@ export function SalesManagement() {
             حذف جميع المبيعات
           </button>
         </div>
+        )}
       </div>
 
       {/* الرسوم البيانية */}

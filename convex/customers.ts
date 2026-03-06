@@ -347,15 +347,13 @@ export const searchAllCustomers = query({
   },
 });
 
-// عرض جميع العملاء (للأدمن)
+// عرض جميع العملاء (لجميع الموظفين)
 export const listAllCustomers = query({
   args: {},
   handler: async (ctx) => {
     const currentUser = await getCurrentUser(ctx);
-    if (currentUser.role !== "admin") {
-      throw new ConvexError("غير مصرح لك بعرض جميع العملاء");
-    }
-
+    
+    // جميع الموظفين يشوفون كل العملاء
     const customers = await ctx.db.query("customers").collect();
     return Promise.all(
       customers.map(async (customer) => {
@@ -369,20 +367,24 @@ export const listAllCustomers = query({
   },
 });
 
-// عرض عملاء موظف المبيعات
+// عرض جميع العملاء (لجميع الموظفين - للعرض فقط)
 export const listMyCustomers = query({
   args: {},
   handler: async (ctx) => {
     const currentUser = await getCurrentUser(ctx);
-    const customers = await ctx.db
-      .query("customers")
-      .withIndex("by_salesperson", (q) => q.eq("salesPersonId", currentUser._id))
-      .collect();
+    
+    // جميع الموظفين يشوفون كل العملاء
+    const customers = await ctx.db.query("customers").collect();
 
-    return customers.map((customer) => ({
-      ...customer,
-      salesPersonName: currentUser.fullName || currentUser.email || "أنت",
-    }));
+    return Promise.all(
+      customers.map(async (customer) => {
+        const salesPerson = await ctx.db.get(customer.salesPersonId);
+        return {
+          ...customer,
+          salesPersonName: salesPerson?.fullName || salesPerson?.email || "غير محدد",
+        };
+      })
+    );
   },
 });
 

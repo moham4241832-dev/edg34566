@@ -253,6 +253,48 @@ export const getAllCollectionStats = query({
   },
 });
 
+// عرض عملاء الموظف للتحصيل (الموظف يشوف عملاءه فقط، المدير يشوف الكل)
+export const getCustomersForCollection = query({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw new ConvexError("يجب تسجيل الدخول أولاً");
+    }
+
+    const user = await ctx.db.get(userId);
+    if (!user) {
+      throw new ConvexError("المستخدم غير موجود");
+    }
+
+    let customers;
+    
+    if (user.role === "admin") {
+      // المدير يشوف كل العملاء في التحصيل
+      customers = await ctx.db.query("customers").collect();
+    } else {
+      // الموظف يشوف عملاءه فقط في التحصيل
+      customers = await ctx.db
+        .query("customers")
+        .withIndex("by_salesperson", (q) => q.eq("salesPersonId", userId))
+        .collect();
+    }
+
+    // إضافة معلومات المندوب لكل عميل
+    const customersWithSalesPerson = await Promise.all(
+      customers.map(async (customer) => {
+        const salesPerson = await ctx.db.get(customer.salesPersonId);
+        return {
+          ...customer,
+          salesPersonName: salesPerson?.fullName || "غير محدد",
+        };
+      })
+    );
+
+    return customersWithSalesPerson;
+  },
+});
+
 // حذف عملية تحصيل (للمدير فقط)
 export const deleteCollection = mutation({
   args: { collectionId: v.id("collections") },

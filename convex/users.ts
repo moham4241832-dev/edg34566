@@ -48,18 +48,13 @@ export const makeFirstAdmin = mutation({
   },
 });
 
-// عرض موظفي المبيعات فقط (للأدمن)
+// عرض موظفي المبيعات (لجميع الموظفين)
 export const listSalespeople = query({
   args: {},
   handler: async (ctx) => {
     const userId = await getAuthUserId(ctx);
     if (!userId) {
       throw new ConvexError("يجب تسجيل الدخول أولاً");
-    }
-
-    const currentUser = await ctx.db.get(userId);
-    if (!currentUser || currentUser.role !== "admin") {
-      throw new ConvexError("فقط الأدمن يمكنه عرض قائمة الموظفين");
     }
 
     const allUsers = await ctx.db.query("users").collect();

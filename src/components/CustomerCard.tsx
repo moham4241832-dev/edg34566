@@ -8,9 +8,12 @@ import { OverdueStatusModal } from "./OverdueStatusModal";
 export function CustomerCard() {
   const customers = useQuery(api.customers.listMyCustomers);
   const overdueStatuses = useQuery(api.overdue.getAllOverdueStatuses);
+  const currentUser = useQuery(api.users.getCurrentUser);
   const [selectedCustomerId, setSelectedCustomerId] = useState<Id<"customers"> | null>(null);
   const [selectedOverdueCustomerId, setSelectedOverdueCustomerId] = useState<Id<"customers"> | null>(null);
   const [selectedOverdueCustomerName, setSelectedOverdueCustomerName] = useState<string>("");
+  
+  const isAdmin = currentUser?.role === "admin";
 
   if (!customers) {
     return (
@@ -80,12 +83,14 @@ export function CustomerCard() {
                     {customer.phone}
                   </p>
                 </div>
-                <button
-                  onClick={() => setSelectedCustomerId(customer._id)}
-                  className="px-4 py-2 bg-gradient-to-l from-amber-500 to-yellow-600 text-white rounded-lg font-semibold hover:shadow-lg transform hover:scale-105 transition-all"
-                >
-                  إضافة تحصيل
-                </button>
+                {isAdmin && (
+                  <button
+                    onClick={() => setSelectedCustomerId(customer._id)}
+                    className="px-4 py-2 bg-gradient-to-l from-amber-500 to-yellow-600 text-white rounded-lg font-semibold hover:shadow-lg transform hover:scale-105 transition-all"
+                  >
+                    إضافة تحصيل
+                  </button>
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-4 mb-4">
@@ -300,7 +305,6 @@ export function CustomerCard() {
 
       {selectedCustomerId && (
         <AddCollectionModal
-          customerId={selectedCustomerId}
           onClose={() => setSelectedCustomerId(null)}
         />
       )}
