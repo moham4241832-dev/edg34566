@@ -9,6 +9,7 @@ const customAuthTables = {
     ...authTables.users.validator.fields,
     fullName: v.optional(v.string()),
     role: v.optional(v.union(v.literal("admin"), v.literal("salesperson"))),
+    viewAllCustomers: v.optional(v.boolean()), // السماح للموظف برؤية جميع العملاء
   })
     .index("email", ["email"])
     .index("phone", ["phone"]),

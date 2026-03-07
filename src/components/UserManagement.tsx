@@ -9,10 +9,12 @@ export function UserManagement() {
   const allUsers = useQuery(api.users.listAllUsers);
   const assignRole = useMutation(api.users.assignRole);
   const deleteUser = useMutation(api.users.deleteUser);
+  const updateViewAllCustomers = useMutation(api.users.updateViewAllCustomers);
 
   const [userId, setUserId] = useState("");
   const [role, setRole] = useState<"admin" | "salesperson">("salesperson");
   const [fullName, setFullName] = useState("");
+  const [viewAllCustomers, setViewAllCustomers] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,11 +24,13 @@ export function UserManagement() {
         userId: userId as any,
         role,
         fullName,
+        viewAllCustomers,
       });
       toast.success("تم تعيين الدور بنجاح");
       setUserId("");
       setFullName("");
       setRole("salesperson");
+      setViewAllCustomers(false);
     } catch (error) {
       const message = error instanceof Error ? error.message : "حدث خطأ";
       toast.error(message);
@@ -41,6 +45,19 @@ export function UserManagement() {
     try {
       await deleteUser({ userId });
       toast.success("تم حذف المستخدم بنجاح");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "حدث خطأ";
+      toast.error(message);
+    }
+  };
+
+  const handleToggleViewAll = async (userId: Id<"users">, currentValue: boolean) => {
+    try {
+      await updateViewAllCustomers({
+        userId,
+        viewAllCustomers: !currentValue,
+      });
+      toast.success(!currentValue ? "تم تفعيل رؤية جميع العملاء" : "تم إلغاء رؤية جميع العملاء");
     } catch (error) {
       const message = error instanceof Error ? error.message : "حدث خطأ";
       toast.error(message);
@@ -90,6 +107,7 @@ export function UserManagement() {
                 <th className="px-6 py-3 text-start text-xs font-semibold text-gray-700 uppercase">الاسم</th>
                 <th className="px-6 py-3 text-start text-xs font-semibold text-gray-700 uppercase">البريد الإلكتروني</th>
                 <th className="px-6 py-3 text-start text-xs font-semibold text-gray-700 uppercase">الدور</th>
+                <th className="px-6 py-3 text-start text-xs font-semibold text-gray-700 uppercase">رؤية الكل</th>
                 <th className="px-6 py-3 text-start text-xs font-semibold text-gray-700 uppercase">معرف المستخدم</th>
                 <th className="px-6 py-3 text-center text-xs font-semibold text-gray-700 uppercase">الإجراءات</th>
               </tr>
@@ -97,24 +115,41 @@ export function UserManagement() {
             <tbody className="divide-y divide-gray-200">
               {!allUsers ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-gray-400">
+                  <td colSpan={6} className="px-6 py-8 text-center text-gray-400">
                     جاري التحميل...
                   </td>
                 </tr>
               ) : allUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-gray-400">
+                  <td colSpan={6} className="px-6 py-8 text-center text-gray-400">
                     لا يوجد مستخدمين بعد
                   </td>
                 </tr>
               ) : (
-                allUsers.map((user) => (
+                allUsers.map((user: any) => (
                   <tr key={user._id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4 text-sm font-semibold text-gray-900">
                       {user.fullName}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-600">{user.email}</td>
                     <td className="px-6 py-4 text-sm">{getRoleBadge(user.role)}</td>
+                    <td className="px-6 py-4 text-sm">
+                      {user.role === "salesperson" && (
+                        <button
+                          onClick={() => handleToggleViewAll(user._id, user.viewAllCustomers || false)}
+                          className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
+                            user.viewAllCustomers
+                              ? "bg-green-100 text-green-800 hover:bg-green-200"
+                              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                          }`}
+                        >
+                          {user.viewAllCustomers ? "✓ مفعّل" : "✗ معطّل"}
+                        </button>
+                      )}
+                      {user.role === "admin" && (
+                        <span className="text-xs text-gray-400">-</span>
+                      )}
+                    </td>
                     <td className="px-6 py-4 text-xs text-gray-500 font-mono">
                       {user._id}
                     </td>
@@ -183,6 +218,27 @@ export function UserManagement() {
             </select>
           </div>
 
+          {role === "salesperson" && (
+            <div className="bg-blue-50 rounded-xl p-4 border-2 border-blue-200">
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={viewAllCustomers}
+                  onChange={(e) => setViewAllCustomers(e.target.checked)}
+                  className="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500 mt-0.5"
+                />
+                <div>
+                  <span className="text-sm font-semibold text-gray-900 block">
+                    السماح برؤية جميع العملاء
+                  </span>
+                  <p className="text-xs text-gray-600 mt-1">
+                    إذا تم التفعيل، سيتمكن الموظف من رؤية جميع العملاء (ليس فقط عملاءه)
+                  </p>
+                </div>
+              </label>
+            </div>
+          )}
+
           <button
             type="submit"
             className="w-full px-6 py-3 bg-gradient-to-l from-blue-500 to-indigo-600 text-white rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all"
@@ -205,7 +261,13 @@ export function UserManagement() {
             <svg className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
             </svg>
-            <span>موظف المبيعات يمكنه رؤية عملائه فقط وإضافة تحصيلات لهم</span>
+            <span>موظف المبيعات يمكنه رؤية عملائه فقط (إلا إذا تم تفعيل "رؤية الكل")</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <svg className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+            </svg>
+            <span>خاصية "رؤية الكل" تسمح للموظف برؤية جميع العملاء في النظام</span>
           </li>
           <li className="flex items-start gap-2">
             <svg className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">

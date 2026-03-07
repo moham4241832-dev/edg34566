@@ -58,6 +58,7 @@ export function ExcelImport() {
           return;
         }
 
+        console.log("✅ تم تحميل البيانات:", filteredData);
         setPreviewData(filteredData);
         toast.success(`تم تحميل ${filteredData.length} عميل من الملف! 📊`);
       } catch (error) {
@@ -76,7 +77,7 @@ export function ExcelImport() {
     }
 
     if (isAdmin && !selectedSalesPerson) {
-      toast.error("يجب اختيار موظف المبيعات للعملاء الجدد!");
+      toast.error("يجب اختيار موظف المبيعات أو اختيار 'بدون موظف'!");
       return;
     }
 
@@ -100,13 +101,15 @@ export function ExcelImport() {
           creditLimit: isNaN(creditLimit) ? 0 : creditLimit,
         };
         
-        if (isAdmin && selectedSalesPerson) {
+        // إضافة salesPersonId فقط إذا لم يكن "none"
+        if (selectedSalesPerson && selectedSalesPerson !== "none") {
           customer.salesPersonId = selectedSalesPerson as Id<"users">;
         }
         
         return customer;
       });
 
+      console.log("🔄 إرسال بيانات التحديث:", customers);
       const result = await updateCustomers({ customers });
 
       if (result.updated > 0) {
@@ -131,6 +134,7 @@ export function ExcelImport() {
       if (fileInput) fileInput.value = "";
       
     } catch (error) {
+      console.error("❌ خطأ في التحديث:", error);
       const message = error instanceof Error ? error.message : "حدث خطأ";
       toast.error(message);
     } finally {
@@ -146,7 +150,7 @@ export function ExcelImport() {
     }
 
     if (isAdmin && !selectedSalesPerson) {
-      toast.error("يجب اختيار موظف المبيعات!");
+      toast.error("يجب اختيار موظف المبيعات أو اختيار 'بدون موظف'!");
       return;
     }
 
@@ -170,14 +174,18 @@ export function ExcelImport() {
           creditLimit: isNaN(creditLimit) ? 0 : creditLimit,
         };
         
-        if (isAdmin && selectedSalesPerson) {
+        // إضافة salesPersonId فقط إذا لم يكن "none"
+        if (selectedSalesPerson && selectedSalesPerson !== "none") {
           customer.salesPersonId = selectedSalesPerson as Id<"users">;
         }
         
         return customer;
       });
 
+      console.log("📤 إرسال بيانات الاستيراد:", customers);
       const result = await importCustomers({ customers });
+
+      console.log("📥 نتيجة الاستيراد:", result);
 
       if (result.success > 0) {
         toast.success(`تم استيراد ${result.success} عميل بنجاح! ✅`);
@@ -197,6 +205,7 @@ export function ExcelImport() {
       if (fileInput) fileInput.value = "";
       
     } catch (error) {
+      console.error("❌ خطأ في الاستيراد:", error);
       const message = error instanceof Error ? error.message : "حدث خطأ";
       toast.error(message);
     } finally {
@@ -317,12 +326,31 @@ export function ExcelImport() {
             className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all"
           >
             <option value="">اختر موظف المبيعات</option>
+            <option value="none" className="font-bold text-gray-700">
+              🚫 بدون موظف (عملاء بدون تخصيص)
+            </option>
             {salespeople?.map((sp: any) => (
               <option key={sp._id} value={sp._id}>
                 {sp.fullName} ({sp.email})
               </option>
             ))}
           </select>
+          
+          {selectedSalesPerson === "none" && (
+            <div className="mt-4 bg-amber-50 rounded-xl p-4 border-2 border-amber-200">
+              <div className="flex items-start gap-3">
+                <span className="text-2xl">ℹ️</span>
+                <div>
+                  <p className="text-sm font-semibold text-gray-900 mb-1">
+                    العملاء سيتم إضافتهم بدون موظف مبيعات
+                  </p>
+                  <p className="text-xs text-gray-600">
+                    يمكنك تخصيص موظف لهم لاحقاً من صفحة إدارة العملاء
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
 

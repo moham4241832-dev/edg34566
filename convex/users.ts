@@ -123,6 +123,7 @@ export const assignRole = mutation({
     userId: v.id("users"),
     role: v.union(v.literal("admin"), v.literal("salesperson")),
     fullName: v.string(),
+    viewAllCustomers: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     const currentUserId = await getAuthUserId(ctx);
@@ -138,6 +139,32 @@ export const assignRole = mutation({
     await ctx.db.patch(args.userId, {
       role: args.role,
       fullName: args.fullName,
+      viewAllCustomers: args.viewAllCustomers,
+    });
+
+    return { success: true };
+  },
+});
+
+// تحديث صلاحية رؤية جميع العملاء (للأدمن فقط)
+export const updateViewAllCustomers = mutation({
+  args: {
+    userId: v.id("users"),
+    viewAllCustomers: v.boolean(),
+  },
+  handler: async (ctx, args) => {
+    const currentUserId = await getAuthUserId(ctx);
+    if (!currentUserId) {
+      throw new ConvexError("يجب تسجيل الدخول أولاً");
+    }
+
+    const currentUser = await ctx.db.get(currentUserId);
+    if (!currentUser || currentUser.role !== "admin") {
+      throw new ConvexError("فقط الأدمن يمكنه تعديل الصلاحيات");
+    }
+
+    await ctx.db.patch(args.userId, {
+      viewAllCustomers: args.viewAllCustomers,
     });
 
     return { success: true };

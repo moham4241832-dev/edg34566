@@ -137,16 +137,16 @@ export const importCustomers = mutation({
         let salesPersonId;
         
         if (currentUser.role === "salesperson") {
-          // الموظف العادي: استخدم ID الموظف الحالي
+          // الموظف العادي: استخدم ID الموظف الحالي دائماً
           salesPersonId = currentUser._id;
         } else if (currentUser.role === "admin") {
           // الأدمن: يجب أن يكون اختار موظف مبيعات
-          if (!customer.salesPersonId) {
+          salesPersonId = customer.salesPersonId;
+          if (!salesPersonId) {
             results.failed++;
             results.errors.push(`${customer.name} - يجب تحديد موظف المبيعات`);
             continue;
           }
-          salesPersonId = customer.salesPersonId;
         } else {
           results.failed++;
           results.errors.push(`${customer.name} - خطأ في تحديد موظف المبيعات`);
@@ -222,14 +222,16 @@ export const updateCustomersFromExcel = mutation({
           let salesPersonId;
           
           if (currentUser.role === "salesperson") {
+            // الموظف العادي: استخدم ID الموظف الحالي دائماً
             salesPersonId = currentUser._id;
           } else if (currentUser.role === "admin") {
-            if (!customerData.salesPersonId) {
+            // الأدمن: يجب أن يكون اختار موظف مبيعات
+            salesPersonId = customerData.salesPersonId;
+            if (!salesPersonId) {
               results.failed++;
               results.errors.push(`${customerData.name} - عميل جديد يحتاج موظف مبيعات`);
               continue;
             }
-            salesPersonId = customerData.salesPersonId;
           } else {
             results.failed++;
             results.errors.push(`${customerData.name} - خطأ في تحديد موظف المبيعات`);
@@ -367,14 +369,24 @@ export const listAllCustomers = query({
   },
 });
 
-// عرض جميع العملاء (لجميع الموظفين - للعرض فقط)
+// عرض العملاء حسب صلاحيات الموظف
 export const listMyCustomers = query({
   args: {},
   handler: async (ctx) => {
     const currentUser = await getCurrentUser(ctx);
     
-    // جميع الموظفين يشوفون كل العملاء
-    const customers = await ctx.db.query("customers").collect();
+    let customers;
+    
+    // إذا كان الموظف له صلاحية رؤية جميع العملاء أو كان أدمن
+    if (currentUser.role === "admin" || currentUser.viewAllCustomers === true) {
+      customers = await ctx.db.query("customers").collect();
+    } else {
+      // الموظف العادي يشوف عملاءه فقط
+      customers = await ctx.db
+        .query("customers")
+        .withIndex("by_salesperson", (q) => q.eq("salesPersonId", currentUser._id))
+        .collect();
+    }
 
     return Promise.all(
       customers.map(async (customer) => {
