@@ -162,7 +162,7 @@ export const createHighDebtAlerts = internalMutation({
       const totalDebt = customer.goldDebt21 + customer.cashDebt;
       
       // إذا كانت المديونية أكثر من 10000 جنيه أو 100 جرام ذهب
-      if (totalDebt > 10000 || customer.goldDebt21 > 100) {
+      if ((totalDebt > 10000 || customer.goldDebt21 > 100) && customer.salesPersonId) {
         await ctx.db.insert("notifications", {
           userId: customer.salesPersonId,
           type: "high_debt",

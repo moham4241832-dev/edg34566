@@ -130,24 +130,24 @@ export function CustomerManagementWithOverdue() {
   });
 
   return (
-    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl shadow-xl p-6 border-2 border-blue-200">
+    <div className="bg-gradient-to-br from-gray-900 to-red-950 rounded-2xl shadow-xl p-6 border-2 border-red-900">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
+          <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-800 rounded-xl flex items-center justify-center border-2 border-red-900">
             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
           </div>
           <div>
-            <h3 className="text-xl font-bold text-gray-900">إدارة العملاء</h3>
-            <p className="text-sm text-gray-600">إضافة وتعديل بيانات العملاء</p>
+            <h3 className="text-xl font-bold text-white">إدارة العملاء</h3>
+            <p className="text-sm text-gray-300">إضافة وتعديل بيانات العملاء</p>
           </div>
         </div>
 
         {!isAdding && (
           <button
             onClick={() => setIsAdding(true)}
-            className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold rounded-full hover:from-blue-600 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl hover:scale-110 flex items-center justify-center"
+            className="w-12 h-12 bg-gradient-to-r from-red-600 to-red-800 text-white font-bold rounded-full hover:from-red-700 hover:to-red-900 transition-all shadow-lg hover:shadow-xl hover:scale-110 flex items-center justify-center border-2 border-red-900"
             title="إضافة عميل"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -158,8 +158,8 @@ export function CustomerManagementWithOverdue() {
       </div>
 
       {isAdding && (
-        <div className="bg-white rounded-xl p-6 mb-6 border-2 border-blue-200">
-          <h4 className="text-lg font-bold text-gray-900 mb-4">
+        <div className="bg-gray-800 rounded-xl p-6 mb-6 border-2 border-red-900">
+          <h4 className="text-lg font-bold text-white mb-4">
             {editingCustomer ? "تعديل بيانات العميل" : "إضافة عميل جديد"}
           </h4>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -257,7 +257,7 @@ export function CustomerManagementWithOverdue() {
             <div className="flex gap-3">
               <button
                 type="submit"
-                className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl"
+                className="flex-1 px-6 py-3 bg-gradient-to-r from-red-600 to-red-800 text-white font-bold rounded-xl hover:from-red-700 hover:to-red-900 transition-all shadow-lg hover:shadow-xl border-2 border-red-900"
               >
                 {editingCustomer ? "حفظ التعديلات" : "إضافة العميل"}
               </button>
@@ -273,8 +273,8 @@ export function CustomerManagementWithOverdue() {
         </div>
       )}
 
-      <div className="bg-white rounded-xl p-4 border-2 border-blue-200">
-        <h4 className="text-lg font-bold text-gray-900 mb-4">
+      <div className="bg-gray-800 rounded-xl p-4 border-2 border-red-900">
+        <h4 className="text-lg font-bold text-white mb-4">
           قائمة العملاء ({customers.length})
         </h4>
 
@@ -283,8 +283,8 @@ export function CustomerManagementWithOverdue() {
             <svg className="w-16 h-16 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
-            <p className="text-lg font-semibold text-gray-900">لا يوجد عملاء بعد</p>
-            <p className="text-sm text-gray-600 mt-1">ابدأ بإضافة أول عميل</p>
+            <p className="text-lg font-semibold text-white">لا يوجد عملاء بعد</p>
+            <p className="text-sm text-gray-400 mt-1">ابدأ بإضافة أول عميل</p>
           </div>
         ) : (
           <div className="space-y-3 max-h-[600px] overflow-y-auto">
@@ -295,23 +295,23 @@ export function CustomerManagementWithOverdue() {
               return (
                 <div
                   key={customer._id}
-                  className="bg-white rounded-2xl p-5 hover:shadow-2xl transition-all duration-300 border-2 border-blue-100 hover:border-blue-300 transform hover:-translate-y-1"
+                  className="bg-gray-900 rounded-2xl p-5 hover:shadow-2xl transition-all duration-300 border-2 border-red-900 hover:border-red-700 transform hover:-translate-y-1"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
-                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                        <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center text-white font-bold text-lg border-2 border-red-900">
                           {customer.name.charAt(0)}
                         </div>
-                        <h5 className="text-xl font-bold text-gray-900">{customer.name}</h5>
+                        <h5 className="text-xl font-bold text-white">{customer.name}</h5>
                       </div>
-                      <p className="text-sm text-gray-600 flex items-center gap-2 mb-1">
+                      <p className="text-sm text-gray-300 flex items-center gap-2 mb-1">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                         </svg>
                         {customer.phone}
                       </p>
-                      <p className="text-sm text-gray-600 flex items-center gap-2">
+                      <p className="text-sm text-gray-300 flex items-center gap-2">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -319,7 +319,7 @@ export function CustomerManagementWithOverdue() {
                         {customer.region}
                       </p>
                       {salesPerson && (
-                        <p className="text-xs text-blue-600 mt-1 flex items-center gap-1">
+                        <p className="text-xs text-red-400 mt-1 flex items-center gap-1">
                           <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                           </svg>
@@ -331,7 +331,7 @@ export function CustomerManagementWithOverdue() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleEdit(customer)}
-                        className="p-2.5 bg-gradient-to-br from-blue-50 to-blue-100 text-blue-600 rounded-xl hover:from-blue-100 hover:to-blue-200 transition-all shadow-sm hover:shadow-md"
+                        className="p-2.5 bg-gradient-to-br from-amber-900 to-yellow-900 text-amber-400 rounded-xl hover:from-amber-800 hover:to-yellow-800 transition-all shadow-sm hover:shadow-md border border-amber-700"
                         title="تعديل"
                       >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -340,7 +340,7 @@ export function CustomerManagementWithOverdue() {
                       </button>
                       <button
                         onClick={() => handleDelete(customer._id)}
-                        className="p-2.5 bg-gradient-to-br from-red-50 to-red-100 text-red-600 rounded-xl hover:from-red-100 hover:to-red-200 transition-all shadow-sm hover:shadow-md"
+                        className="p-2.5 bg-gradient-to-br from-red-900 to-red-950 text-red-400 rounded-xl hover:from-red-800 hover:to-red-900 transition-all shadow-sm hover:shadow-md border border-red-700"
                         title="حذف"
                       >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

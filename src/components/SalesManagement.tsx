@@ -111,7 +111,7 @@ export function SalesManagement() {
   if (!salesByBranch || !salesBySalesperson) {
     return (
       <div className="text-center py-8">
-        <div className="animate-pulse text-blue-600 font-semibold">
+        <div className="animate-pulse text-red-600 font-semibold">
           جاري التحميل...
         </div>
       </div>
@@ -121,10 +121,10 @@ export function SalesManagement() {
   return (
     <div className="space-y-6">
       {/* أزرار التحكم */}
-      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl shadow-xl p-6 border-2 border-blue-200">
+      <div className="bg-gradient-to-br from-gray-900 to-red-950 rounded-2xl shadow-xl p-6 border-2 border-red-900">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-800 rounded-xl flex items-center justify-center border-2 border-red-900">
               <svg
                 className="w-6 h-6 text-white"
                 fill="none"
@@ -140,8 +140,8 @@ export function SalesManagement() {
               </svg>
             </div>
             <div>
-              <h3 className="text-xl font-bold text-gray-900">إدارة المبيعات</h3>
-              <p className="text-sm text-gray-600">
+              <h3 className="text-xl font-bold text-white">إدارة المبيعات</h3>
+              <p className="text-sm text-gray-300">
                 استيراد وتحليل بيانات المبيعات
               </p>
             </div>
@@ -149,10 +149,10 @@ export function SalesManagement() {
         </div>
 
         {isAdmin && (
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3">
           <button
             onClick={downloadTemplate}
-            className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-xl hover:from-green-600 hover:to-emerald-700 transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
+            className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base bg-gradient-to-r from-green-600 to-emerald-700 text-white font-bold rounded-lg sm:rounded-xl hover:from-green-700 hover:to-emerald-800 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 border-2 border-green-900"
           >
             <svg
               className="w-5 h-5"
@@ -170,7 +170,7 @@ export function SalesManagement() {
             تحميل ملف نموذجي
           </button>
 
-          <label className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl flex items-center gap-2 cursor-pointer">
+          <label className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base bg-gradient-to-r from-amber-600 to-yellow-700 text-white font-bold rounded-lg sm:rounded-xl hover:from-amber-700 hover:to-yellow-800 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 cursor-pointer border-2 border-amber-900">
             <svg
               className="w-5 h-5"
               fill="none"
@@ -196,7 +196,7 @@ export function SalesManagement() {
 
           <button
             onClick={handleClearSales}
-            className="px-6 py-3 bg-gradient-to-r from-red-500 to-rose-600 text-white font-bold rounded-xl hover:from-red-600 hover:to-rose-700 transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
+            className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base bg-gradient-to-r from-red-500 to-rose-600 text-white font-bold rounded-lg sm:rounded-xl hover:from-red-600 hover:to-rose-700 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
           >
             <svg
               className="w-5 h-5"
@@ -220,8 +220,8 @@ export function SalesManagement() {
       {/* الرسوم البيانية */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* مبيعات عيار 21 حسب الفرع */}
-        <div className="bg-white rounded-2xl shadow-xl p-6 border-2 border-amber-200">
-          <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+        <div className="bg-gray-900 rounded-2xl shadow-xl p-6 border-2 border-amber-900">
+          <h4 className="text-lg font-bold text-amber-400 mb-4 flex items-center gap-2">
             <span className="text-2xl">📊</span>
             مبيعات عيار 21 حسب الفرع
           </h4>
@@ -241,10 +241,10 @@ export function SalesManagement() {
                 return (
                   <div key={branch.branch} className="space-y-1">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm font-semibold text-gray-700">
+                      <span className="text-sm font-semibold text-amber-300">
                         {branch.branch}
                       </span>
-                      <span className="text-sm font-bold text-amber-600">
+                      <span className="text-sm font-bold text-amber-400">
                         {gold21Total.toFixed(2)} جم
                       </span>
                     </div>
@@ -392,7 +392,7 @@ export function SalesManagement() {
           <span className="text-2xl">📋</span>
           إجماليات المبيعات
         </h4>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
           <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-xl p-4 border-2 border-amber-200">
             <p className="text-sm font-medium text-amber-800 mb-1">
               إجمالي عيار 21

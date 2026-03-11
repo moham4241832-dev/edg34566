@@ -2,9 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+/* إخفاء شريط التمرير للموبايل */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 :root {
-  --color-light: #ffffff;
-  --color-dark: #171717;
+  --color-light: #0a0a0a;
+  --color-dark: #ffffff;
+  --color-bg-primary: #1a1a1a;
+  --color-bg-secondary: #2a0a0a;
+  --color-accent: #dc2626;
 }
 
 .accent-text {
@@ -30,7 +43,8 @@ body {
     "Segoe UI Symbol",
     "Noto Color Emoji";
   color: var(--color-dark);
-  background: var(--color-light);
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a0505 100%);
+  min-height: 100vh;
 }
 
 /* only use this to update the style of the auth input fields. use a different class for all other input fields */

@@ -6,10 +6,11 @@ import { Id } from "../../convex/_generated/dataModel";
 
 interface AddCollectionModalProps {
   onClose: () => void;
+  customerId?: Id<"customers">;
 }
 
-export function AddCollectionModal({ onClose }: AddCollectionModalProps) {
-  const [selectedCustomerId, setSelectedCustomerId] = useState<Id<"customers"> | "">("");
+export function AddCollectionModal({ onClose, customerId }: AddCollectionModalProps) {
+  const [selectedCustomerId, setSelectedCustomerId] = useState<Id<"customers"> | "">(customerId || "");
   const [goldAmount, setGoldAmount] = useState("");
   const [cashAmount, setCashAmount] = useState("");
   const [notes, setNotes] = useState("");
@@ -51,10 +52,10 @@ export function AddCollectionModal({ onClose }: AddCollectionModalProps) {
 
   if (!customers) {
     return (
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-2xl p-8 max-w-2xl w-full">
+      <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="bg-gray-900 border-2 border-red-900 rounded-2xl p-8 max-w-2xl w-full">
           <div className="text-center py-8">
-            <div className="animate-pulse text-amber-600 font-semibold">جاري التحميل...</div>
+            <div className="animate-pulse text-red-500 font-semibold">جاري التحميل...</div>
           </div>
         </div>
       </div>
@@ -64,16 +65,16 @@ export function AddCollectionModal({ onClose }: AddCollectionModalProps) {
   const selectedCustomer = customers.find((c) => c._id === selectedCustomerId);
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl p-6 md:p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-gray-900 border-2 border-red-900 rounded-2xl p-6 md:p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <h3 className="text-2xl font-bold text-white flex items-center gap-2">
             <span className="text-3xl">💰</span>
             تسجيل تحصيل جديد
           </h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-gray-400 hover:text-red-500 transition-colors"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -84,13 +85,13 @@ export function AddCollectionModal({ onClose }: AddCollectionModalProps) {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* اختيار العميل */}
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
+            <label className="block text-sm font-bold text-gray-300 mb-2">
               اختر العميل <span className="text-red-500">*</span>
             </label>
             <select
               value={selectedCustomerId}
               onChange={(e) => setSelectedCustomerId(e.target.value as Id<"customers"> | "")}
-              className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 transition-all text-start"
+              className="w-full px-4 py-3 rounded-lg border-2 border-red-900 bg-gray-800 text-white focus:border-red-600 focus:ring-2 focus:ring-red-900 transition-all text-start"
               required
             >
               <option value="">-- اختر عميل --</option>
@@ -128,7 +129,7 @@ export function AddCollectionModal({ onClose }: AddCollectionModalProps) {
 
           {/* مبلغ الذهب */}
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
+            <label className="block text-sm font-bold text-gray-300 mb-2">
               مبلغ الذهب المحصل (جرام عيار 21)
             </label>
             <input
@@ -138,13 +139,13 @@ export function AddCollectionModal({ onClose }: AddCollectionModalProps) {
               value={goldAmount}
               onChange={(e) => setGoldAmount(e.target.value)}
               placeholder="0.00"
-              className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 transition-all"
+              className="w-full px-4 py-3 rounded-lg border-2 border-red-900 bg-gray-800 text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-900 transition-all"
             />
           </div>
 
           {/* المبلغ النقدي */}
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
+            <label className="block text-sm font-bold text-gray-300 mb-2">
               المبلغ النقدي المحصل (جنيه مصري)
             </label>
             <input
@@ -154,13 +155,13 @@ export function AddCollectionModal({ onClose }: AddCollectionModalProps) {
               value={cashAmount}
               onChange={(e) => setCashAmount(e.target.value)}
               placeholder="0.00"
-              className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all"
+              className="w-full px-4 py-3 rounded-lg border-2 border-red-900 bg-gray-800 text-white focus:border-green-500 focus:ring-2 focus:ring-green-900 transition-all"
             />
           </div>
 
           {/* ملاحظات */}
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
+            <label className="block text-sm font-bold text-gray-300 mb-2">
               ملاحظات (اختياري)
             </label>
             <textarea
@@ -168,7 +169,7 @@ export function AddCollectionModal({ onClose }: AddCollectionModalProps) {
               onChange={(e) => setNotes(e.target.value)}
               placeholder="أي ملاحظات إضافية..."
               rows={3}
-              className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all resize-none"
+              className="w-full px-4 py-3 rounded-lg border-2 border-red-900 bg-gray-800 text-white focus:border-red-600 focus:ring-2 focus:ring-red-900 transition-all resize-none"
             />
           </div>
 
@@ -183,7 +184,7 @@ export function AddCollectionModal({ onClose }: AddCollectionModalProps) {
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-3 bg-gray-200 text-gray-700 font-bold rounded-lg hover:bg-gray-300 transition-all"
+              className="px-6 py-3 bg-gray-700 text-gray-300 font-bold rounded-lg hover:bg-gray-600 transition-all"
             >
               إلغاء
             </button>

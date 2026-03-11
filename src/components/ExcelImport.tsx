@@ -254,38 +254,38 @@ export function ExcelImport() {
   return (
     <div className="space-y-6">
       {/* العنوان */}
-      <div className="bg-gradient-to-l from-blue-500 to-indigo-600 rounded-2xl shadow-xl p-8 text-white">
+      <div className="bg-gradient-to-l from-gray-900 to-red-900 rounded-2xl shadow-xl p-8 text-white">
         <h2 className="text-3xl font-bold mb-2">📊 استيراد وتحديث العملاء من Excel</h2>
-        <p className="text-blue-100">
+        <p className="text-red-100">
           قم بتحميل ملف Excel لاستيراد عملاء جدد أو تحديث بيانات العملاء الموجودين
         </p>
       </div>
 
       {/* شرح الفرق بين الاستيراد والتحديث */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-green-50 rounded-2xl shadow-lg p-6 border-2 border-green-200">
-          <h3 className="text-xl font-bold text-green-900 mb-3 flex items-center gap-2">
+        <div className="bg-gray-900 rounded-2xl shadow-lg p-6 border-2 border-red-800">
+          <h3 className="text-xl font-bold text-red-400 mb-3 flex items-center gap-2">
             <span className="text-2xl">✅</span>
             استيراد عملاء جدد
           </h3>
-          <p className="text-gray-700 mb-3">
+          <p className="text-gray-300 mb-3">
             يضيف عملاء جدد فقط. إذا كان رقم الهاتف موجود، سيتم رفض العميل.
           </p>
-          <div className="bg-white rounded-xl p-3 text-sm text-gray-600">
-            <strong>متى تستخدمه:</strong> عند إضافة عملاء جدد لأول مرة
+          <div className="bg-gray-800 rounded-xl p-3 text-sm text-gray-400">
+            <strong className="text-red-400">متى تستخدمه:</strong> عند إضافة عملاء جدد لأول مرة
           </div>
         </div>
 
-        <div className="bg-blue-50 rounded-2xl shadow-lg p-6 border-2 border-blue-200">
-          <h3 className="text-xl font-bold text-blue-900 mb-3 flex items-center gap-2">
+        <div className="bg-gray-900 rounded-2xl shadow-lg p-6 border-2 border-red-800">
+          <h3 className="text-xl font-bold text-red-400 mb-3 flex items-center gap-2">
             <span className="text-2xl">🔄</span>
             تحديث البيانات
           </h3>
-          <p className="text-gray-700 mb-3">
+          <p className="text-gray-300 mb-3">
             يحدّث بيانات العملاء الموجودين (بناءً على رقم الهاتف) ويضيف الجدد.
           </p>
-          <div className="bg-white rounded-xl p-3 text-sm text-gray-600">
-            <strong>متى تستخدمه:</strong> للتحديث اليومي من نفس ملف Excel
+          <div className="bg-gray-800 rounded-xl p-3 text-sm text-gray-400">
+            <strong className="text-red-400">متى تستخدمه:</strong> للتحديث اليومي من نفس ملف Excel
           </div>
         </div>
       </div>
@@ -294,14 +294,14 @@ export function ExcelImport() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <button
           onClick={downloadTemplate}
-          className="bg-gradient-to-l from-green-500 to-emerald-600 text-white rounded-2xl shadow-xl p-8 hover:shadow-2xl transform hover:scale-105 transition-all"
+          className="bg-gradient-to-l from-gray-900 to-red-900 text-white rounded-2xl shadow-xl p-8 hover:shadow-2xl transform hover:scale-105 transition-all border-2 border-red-800"
         >
           <div className="text-6xl mb-4">📥</div>
           <h3 className="text-2xl font-bold mb-2">تحميل نموذج Excel</h3>
-          <p className="text-green-100">احصل على ملف جاهز مع أمثلة</p>
+          <p className="text-red-200">احصل على ملف جاهز مع أمثلة</p>
         </button>
 
-        <label className="bg-gradient-to-l from-blue-500 to-indigo-600 text-white rounded-2xl shadow-xl p-8 hover:shadow-2xl transform hover:scale-105 transition-all cursor-pointer">
+        <label className="bg-gradient-to-l from-gray-900 to-red-900 text-white rounded-2xl shadow-xl p-8 hover:shadow-2xl transform hover:scale-105 transition-all cursor-pointer border-2 border-red-800">
           <input
             type="file"
             accept=".xlsx,.xls"
@@ -310,20 +310,20 @@ export function ExcelImport() {
           />
           <div className="text-6xl mb-4">📤</div>
           <h3 className="text-2xl font-bold mb-2">اختر ملف Excel</h3>
-          <p className="text-blue-100">ارفع ملف العملاء</p>
+          <p className="text-red-200">ارفع ملف العملاء</p>
         </label>
       </div>
 
       {/* اختيار موظف المبيعات */}
       {isAdmin && salespeople && previewData.length > 0 && (
-        <div className="bg-white rounded-2xl shadow-lg p-6 border-2 border-purple-200">
-          <h3 className="text-xl font-bold text-gray-900 mb-4">
+        <div className="bg-gray-900 rounded-2xl shadow-lg p-6 border-2 border-red-800">
+          <h3 className="text-xl font-bold text-red-400 mb-4">
             👤 اختر موظف المبيعات (للعملاء الجدد فقط)
           </h3>
           <select
             value={selectedSalesPerson}
             onChange={(e) => setSelectedSalesPerson(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all"
+            className="w-full px-4 py-3 rounded-xl border-2 border-red-800 bg-gray-800 text-white focus:border-red-500 focus:ring-2 focus:ring-red-900 outline-none transition-all"
           >
             <option value="">اختر موظف المبيعات</option>
             <option value="none" className="font-bold text-gray-700">
@@ -337,14 +337,14 @@ export function ExcelImport() {
           </select>
           
           {selectedSalesPerson === "none" && (
-            <div className="mt-4 bg-amber-50 rounded-xl p-4 border-2 border-amber-200">
+            <div className="mt-4 bg-gray-800 rounded-xl p-4 border-2 border-red-800">
               <div className="flex items-start gap-3">
                 <span className="text-2xl">ℹ️</span>
                 <div>
-                  <p className="text-sm font-semibold text-gray-900 mb-1">
+                  <p className="text-sm font-semibold text-red-400 mb-1">
                     العملاء سيتم إضافتهم بدون موظف مبيعات
                   </p>
-                  <p className="text-xs text-gray-600">
+                  <p className="text-xs text-gray-400">
                     يمكنك تخصيص موظف لهم لاحقاً من صفحة إدارة العملاء
                   </p>
                 </div>
@@ -356,23 +356,23 @@ export function ExcelImport() {
 
       {/* معاينة البيانات */}
       {previewData.length > 0 && (
-        <div className="bg-white rounded-2xl shadow-lg p-6 border-2 border-green-200">
+        <div className="bg-gray-900 rounded-2xl shadow-lg p-6 border-2 border-red-800">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
-            <h3 className="text-xl font-bold text-gray-900">
+            <h3 className="text-xl font-bold text-red-400">
               👀 معاينة البيانات ({previewData.length} عميل)
             </h3>
             <div className="flex gap-3 w-full sm:w-auto">
               <button
                 onClick={handleUpdate}
                 disabled={updating || (isAdmin && !selectedSalesPerson)}
-                className="flex-1 sm:flex-none px-6 py-3 bg-gradient-to-l from-blue-500 to-indigo-600 text-white rounded-xl font-bold hover:shadow-xl transform hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 sm:flex-none px-6 py-3 bg-gradient-to-l from-gray-800 to-red-900 text-white rounded-xl font-bold hover:shadow-xl transform hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed border-2 border-red-800"
               >
                 {updating ? "جاري التحديث..." : "🔄 تحديث البيانات"}
               </button>
               <button
                 onClick={handleImport}
                 disabled={importing || (isAdmin && !selectedSalesPerson)}
-                className="flex-1 sm:flex-none px-6 py-3 bg-gradient-to-l from-green-500 to-emerald-600 text-white rounded-xl font-bold hover:shadow-xl transform hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 sm:flex-none px-6 py-3 bg-gradient-to-l from-gray-800 to-red-900 text-white rounded-xl font-bold hover:shadow-xl transform hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed border-2 border-red-800"
               >
                 {importing ? "جاري الاستيراد..." : "✅ استيراد جدد"}
               </button>
@@ -381,47 +381,47 @@ export function ExcelImport() {
 
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gradient-to-l from-gray-50 to-gray-100">
+              <thead className="bg-gradient-to-l from-gray-800 to-red-900">
                 <tr>
-                  <th className="px-4 py-3 text-right text-sm font-bold text-gray-700">
+                  <th className="px-4 py-3 text-right text-sm font-bold text-red-200">
                     اسم العميل
                   </th>
-                  <th className="px-4 py-3 text-right text-sm font-bold text-gray-700">
+                  <th className="px-4 py-3 text-right text-sm font-bold text-red-200">
                     رقم الهاتف
                   </th>
-                  <th className="px-4 py-3 text-right text-sm font-bold text-gray-700">
+                  <th className="px-4 py-3 text-right text-sm font-bold text-red-200">
                     المنطقة
                   </th>
-                  <th className="px-4 py-3 text-right text-sm font-bold text-gray-700">
+                  <th className="px-4 py-3 text-right text-sm font-bold text-red-200">
                     مديونية ذهب
                   </th>
-                  <th className="px-4 py-3 text-right text-sm font-bold text-gray-700">
+                  <th className="px-4 py-3 text-right text-sm font-bold text-red-200">
                     مديونية نقدية
                   </th>
-                  <th className="px-4 py-3 text-right text-sm font-bold text-gray-700">
+                  <th className="px-4 py-3 text-right text-sm font-bold text-red-200">
                     الحد الائتماني
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-red-900">
                 {previewData.slice(0, 10).map((row: any, index) => (
-                  <tr key={index} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 text-sm text-gray-900">
+                  <tr key={index} className="hover:bg-gray-800">
+                    <td className="px-4 py-3 text-sm text-gray-200">
                       {row["اسم العميل"] || row["name"] || "-"}
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-900">
+                    <td className="px-4 py-3 text-sm text-gray-200">
                       {row["رقم الهاتف"] || row["phone"] || "-"}
                     </td>
-                    <td className="px-4 py-3 text-sm text-blue-600 font-semibold">
+                    <td className="px-4 py-3 text-sm text-red-400 font-semibold">
                       {row["المنطقة"] || row["region"] || "-"}
                     </td>
-                    <td className="px-4 py-3 text-sm text-amber-600 font-semibold">
+                    <td className="px-4 py-3 text-sm text-red-300 font-semibold">
                       {row["مديونية ذهب"] || row["goldDebt21"] || 0} جرام
                     </td>
-                    <td className="px-4 py-3 text-sm text-green-600 font-semibold">
+                    <td className="px-4 py-3 text-sm text-red-300 font-semibold">
                       {row["مديونية نقدية"] || row["cashDebt"] || 0} جنيه
                     </td>
-                    <td className="px-4 py-3 text-sm text-purple-600 font-semibold">
+                    <td className="px-4 py-3 text-sm text-red-300 font-semibold">
                       {row["الحد الائتماني"] || row["creditLimit"] || 0} جرام
                     </td>
                   </tr>
@@ -429,7 +429,7 @@ export function ExcelImport() {
               </tbody>
             </table>
             {previewData.length > 10 && (
-              <p className="text-center text-gray-500 mt-4 text-sm">
+              <p className="text-center text-gray-400 mt-4 text-sm">
                 ... و {previewData.length - 10} عميل آخر
               </p>
             )}

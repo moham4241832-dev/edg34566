@@ -23,7 +23,7 @@ const applicationTables = {
     goldDebt21: v.number(),
     cashDebt: v.number(),
     creditLimit: v.optional(v.number()),
-    salesPersonId: v.id("users"),
+    salesPersonId: v.optional(v.id("users")), // اختياري للسماح بعملاء بدون موظف
   })
     .index("by_salesperson", ["salesPersonId"])
     .index("by_phone", ["phone"])

@@ -144,11 +144,11 @@ export function AdminPanel() {
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center flex-wrap gap-4">
-        <h2 className="text-3xl font-bold bg-gradient-to-l from-purple-600 to-pink-600 bg-clip-text text-transparent">
+        <h2 className="text-3xl font-bold bg-gradient-to-l from-red-500 to-amber-600 bg-clip-text text-transparent">
           👑 لوحة تحكم المدير
         </h2>
         <div className="flex gap-3 flex-wrap">
-          <label className="px-6 py-3 bg-gradient-to-l from-blue-500 to-indigo-600 text-white rounded-xl font-bold hover:shadow-xl transform hover:scale-105 transition-all flex items-center gap-2 cursor-pointer">
+          <label className="px-6 py-3 bg-gradient-to-l from-red-600 to-red-800 text-white rounded-xl font-bold hover:shadow-xl transform hover:scale-105 transition-all flex items-center gap-2 cursor-pointer border-2 border-red-900">
             <svg
               className="w-5 h-5"
               fill="none"
@@ -173,7 +173,7 @@ export function AdminPanel() {
             />
           </label>
           
-          <label className="px-6 py-3 bg-gradient-to-l from-purple-500 to-pink-600 text-white rounded-xl font-bold hover:shadow-xl transform hover:scale-105 transition-all flex items-center gap-2 cursor-pointer">
+          <label className="px-6 py-3 bg-gradient-to-l from-amber-600 to-yellow-700 text-white rounded-xl font-bold hover:shadow-xl transform hover:scale-105 transition-all flex items-center gap-2 cursor-pointer border-2 border-amber-900">
             <svg
               className="w-5 h-5"
               fill="none"
@@ -200,7 +200,7 @@ export function AdminPanel() {
           
           <button
             onClick={handleExportToExcel}
-            className="px-6 py-3 bg-gradient-to-l from-green-500 to-emerald-600 text-white rounded-xl font-bold hover:shadow-xl transform hover:scale-105 transition-all flex items-center gap-2"
+            className="px-6 py-3 bg-gradient-to-l from-green-600 to-emerald-700 text-white rounded-xl font-bold hover:shadow-xl transform hover:scale-105 transition-all flex items-center gap-2 border-2 border-green-900"
           >
             <svg
               className="w-5 h-5"
@@ -222,11 +222,11 @@ export function AdminPanel() {
         </div>
       </div>
 
-      <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4">
-        <h3 className="font-bold text-blue-900 mb-2">💡 كيفية استخدام التحديث من Excel:</h3>
-        <ul className="text-sm text-blue-800 space-y-1">
-          <li>• <strong>استيراد جديد:</strong> يضيف عملاء جدد فقط (يتجاهل الأرقام المكررة)</li>
-          <li>• <strong>تحديث Excel:</strong> يحدث بيانات العملاء الموجودين ويضيف الجدد</li>
+      <div className="bg-gradient-to-br from-red-950 to-amber-950 border-2 border-red-800 rounded-xl p-4">
+        <h3 className="font-bold text-amber-400 mb-2">💡 كيفية استخدام التحديث من Excel:</h3>
+        <ul className="text-sm text-gray-300 space-y-1">
+          <li>• <strong className="text-amber-400">استيراد جديد:</strong> يضيف عملاء جدد فقط (يتجاهل الأرقام المكررة)</li>
+          <li>• <strong className="text-amber-400">تحديث Excel:</strong> يحدث بيانات العملاء الموجودين ويضيف الجدد</li>
           <li>• يجب أن يحتوي الملف على: اسم العميل، رقم الهاتف، المنطقة، مديونية ذهب، مديونية نقدية</li>
         </ul>
       </div>

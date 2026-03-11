@@ -32,12 +32,12 @@ export function CollectionTracking() {
 
   return (
     <div className="space-y-6">
-      <h3 className="text-2xl font-bold text-gray-900">📊 تتبع التحصيلات</h3>
+      <h3 className="text-2xl font-bold text-white">📊 تتبع التحصيلات</h3>
 
       {/* بطاقات الإحصائيات */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* إحصائيات اليوم */}
-        <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white shadow-xl">
+        <div className="bg-gradient-to-br from-red-600 to-red-800 rounded-2xl p-6 text-white shadow-xl border-2 border-red-900">
           <div className="flex items-center justify-between mb-4">
             <h4 className="text-lg font-bold">اليوم</h4>
             <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
@@ -62,7 +62,7 @@ export function CollectionTracking() {
         </div>
 
         {/* إحصائيات الأسبوع */}
-        <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-6 text-white shadow-xl">
+        <div className="bg-gradient-to-br from-amber-600 to-yellow-700 rounded-2xl p-6 text-white shadow-xl border-2 border-amber-900">
           <div className="flex items-center justify-between mb-4">
             <h4 className="text-lg font-bold">هذا الأسبوع</h4>
             <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
@@ -87,7 +87,7 @@ export function CollectionTracking() {
         </div>
 
         {/* الإجمالي الكلي */}
-        <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 text-white shadow-xl">
+        <div className="bg-gradient-to-br from-green-600 to-emerald-700 rounded-2xl p-6 text-white shadow-xl border-2 border-green-900">
           <div className="flex items-center justify-between mb-4">
             <h4 className="text-lg font-bold">الإجمالي الكلي</h4>
             <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
@@ -113,13 +113,13 @@ export function CollectionTracking() {
       </div>
 
       {/* فلتر التحصيلات */}
-      <div className="flex gap-3 bg-white rounded-xl p-2 shadow-md border border-gray-200">
+      <div className="flex gap-3 bg-gray-900 rounded-xl p-2 shadow-md border-2 border-red-900">
         <button
           onClick={() => setFilter("all")}
           className={`flex-1 px-4 py-2 rounded-lg font-semibold transition-all ${
             filter === "all"
               ? "bg-gradient-to-l from-amber-500 to-yellow-600 text-white shadow-lg"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              : "bg-gray-800 text-gray-300 hover:bg-gray-700"
           }`}
         >
           الكل
@@ -128,8 +128,8 @@ export function CollectionTracking() {
           onClick={() => setFilter("today")}
           className={`flex-1 px-4 py-2 rounded-lg font-semibold transition-all ${
             filter === "today"
-              ? "bg-gradient-to-l from-blue-500 to-blue-600 text-white shadow-lg"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              ? "bg-gradient-to-l from-red-600 to-red-800 text-white shadow-lg"
+              : "bg-gray-800 text-gray-300 hover:bg-gray-700"
           }`}
         >
           اليوم
@@ -138,8 +138,8 @@ export function CollectionTracking() {
           onClick={() => setFilter("week")}
           className={`flex-1 px-4 py-2 rounded-lg font-semibold transition-all ${
             filter === "week"
-              ? "bg-gradient-to-l from-purple-500 to-purple-600 text-white shadow-lg"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              ? "bg-gradient-to-l from-amber-600 to-yellow-700 text-white shadow-lg"
+              : "bg-gray-800 text-gray-300 hover:bg-gray-700"
           }`}
         >
           هذا الأسبوع
@@ -147,20 +147,20 @@ export function CollectionTracking() {
       </div>
 
       {/* جدول التحصيلات */}
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+      <div className="bg-gray-900 rounded-xl shadow-lg overflow-hidden border-2 border-red-900">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gradient-to-l from-gray-50 to-gray-100">
+            <thead className="bg-gradient-to-l from-red-900 to-red-950">
               <tr>
-                <th className="px-6 py-4 text-start text-sm font-semibold text-gray-700">التاريخ</th>
-                <th className="px-6 py-4 text-start text-sm font-semibold text-gray-700">العميل</th>
-                <th className="px-6 py-4 text-start text-sm font-semibold text-gray-700">الهاتف</th>
-                <th className="px-6 py-4 text-start text-sm font-semibold text-gray-700">ذهب (جم)</th>
-                <th className="px-6 py-4 text-start text-sm font-semibold text-gray-700">نقدية (ج)</th>
-                <th className="px-6 py-4 text-start text-sm font-semibold text-gray-700">ملاحظات</th>
+                <th className="px-6 py-4 text-start text-sm font-semibold text-gray-200">التاريخ</th>
+                <th className="px-6 py-4 text-start text-sm font-semibold text-gray-200">العميل</th>
+                <th className="px-6 py-4 text-start text-sm font-semibold text-gray-200">الهاتف</th>
+                <th className="px-6 py-4 text-start text-sm font-semibold text-gray-200">ذهب (جم)</th>
+                <th className="px-6 py-4 text-start text-sm font-semibold text-gray-200">نقدية (ج)</th>
+                <th className="px-6 py-4 text-start text-sm font-semibold text-gray-200">ملاحظات</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-red-900">
               {filteredCollections.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center">
@@ -174,8 +174,8 @@ export function CollectionTracking() {
                 </tr>
               ) : (
                 filteredCollections.map((collection) => (
-                  <tr key={collection._id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 text-sm text-gray-600">
+                  <tr key={collection._id} className="hover:bg-red-950/30 transition-colors">
+                    <td className="px-6 py-4 text-sm text-gray-300">
                       {new Date(collection.collectionDate).toLocaleDateString("ar-EG", {
                         year: "numeric",
                         month: "short",
@@ -184,21 +184,21 @@ export function CollectionTracking() {
                         minute: "2-digit",
                       })}
                     </td>
-                    <td className="px-6 py-4 text-sm font-semibold text-gray-900">
+                    <td className="px-6 py-4 text-sm font-semibold text-white">
                       {collection.customerName}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{collection.customerPhone}</td>
+                    <td className="px-6 py-4 text-sm text-gray-300">{collection.customerPhone}</td>
                     <td className="px-6 py-4 text-sm">
-                      <span className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full font-bold">
+                      <span className="px-3 py-1 bg-amber-900/50 text-amber-400 rounded-full font-bold border border-amber-700">
                         {collection.goldAmount.toFixed(2)}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-sm">
-                      <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full font-bold">
+                      <span className="px-3 py-1 bg-green-900/50 text-green-400 rounded-full font-bold border border-green-700">
                         {collection.cashAmount.toFixed(2)}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
+                    <td className="px-6 py-4 text-sm text-gray-400">
                       {collection.notes || "-"}
                     </td>
                   </tr>

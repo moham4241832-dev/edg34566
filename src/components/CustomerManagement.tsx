@@ -155,7 +155,7 @@ export function CustomerManagement() {
   if (!customers || !salespeople) {
     return (
       <div className="text-center py-8">
-        <div className="animate-pulse text-blue-600 font-semibold">جاري التحميل...</div>
+        <div className="animate-pulse text-red-600 font-semibold">جاري التحميل...</div>
       </div>
     );
   }
@@ -178,9 +178,9 @@ export function CustomerManagement() {
 
   return (
     <>
-      <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
+      <div className="bg-gray-900 rounded-3xl shadow-2xl overflow-hidden border-2 border-red-900">
         {/* Header with gradient */}
-        <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 p-8">
+        <div className="bg-gradient-to-r from-red-600 via-red-700 to-red-800 p-8 border-b-2 border-red-900">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 bg-white/20 backdrop-blur-lg rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform">
@@ -188,7 +188,7 @@ export function CustomerManagement() {
               </div>
               <div>
                 <h3 className="text-2xl font-bold text-white mb-1">إدارة العملاء</h3>
-                <p className="text-blue-100 text-sm">إضافة وتعديل بيانات العملاء</p>
+                <p className="text-red-100 text-sm">إضافة وتعديل بيانات العملاء</p>
               </div>
             </div>
 
@@ -196,7 +196,7 @@ export function CustomerManagement() {
             <div className="flex gap-3">
               <button
                 onClick={() => setIsAdding(true)}
-              className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
+              className="px-6 py-3 bg-gradient-to-r from-amber-600 to-yellow-700 text-white font-bold rounded-xl hover:from-amber-700 hover:to-yellow-800 transition-all shadow-lg hover:shadow-xl flex items-center gap-2 border-2 border-amber-900"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -219,11 +219,11 @@ export function CustomerManagement() {
         </div>
 
         {/* Content Area */}
-        <div className="p-8">
+        <div className="p-8 bg-gray-900">
           {isAdding && (
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 mb-6 border-2 border-blue-200 shadow-lg">
+          <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 mb-6 border-2 border-red-900 shadow-lg">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-red-800 rounded-xl flex items-center justify-center border-2 border-red-900">
                 <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>

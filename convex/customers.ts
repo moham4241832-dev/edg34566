@@ -42,14 +42,8 @@ export const addCustomer = mutation({
 
     // تحديد موظف المبيعات
     let salesPersonId = args.salesPersonId;
-    if (currentUser.role === "admin" && !salesPersonId) {
-      throw new ConvexError("يجب اختيار موظف المبيعات");
-    } else if (currentUser.role === "salesperson") {
+    if (currentUser.role === "salesperson") {
       salesPersonId = currentUser._id;
-    }
-
-    if (!salesPersonId) {
-      throw new ConvexError("خطأ في تحديد موظف المبيعات");
     }
 
     return await ctx.db.insert("customers", {
@@ -74,7 +68,7 @@ export const updateCustomer = mutation({
     goldDebt21: v.number(),
     cashDebt: v.number(),
     creditLimit: v.optional(v.number()),
-    salesPersonId: v.id("users"),
+    salesPersonId: v.optional(v.id("users")),
   },
   handler: async (ctx, args) => {
     const currentUser = await getCurrentUser(ctx);
@@ -140,13 +134,8 @@ export const importCustomers = mutation({
           // الموظف العادي: استخدم ID الموظف الحالي دائماً
           salesPersonId = currentUser._id;
         } else if (currentUser.role === "admin") {
-          // الأدمن: يجب أن يكون اختار موظف مبيعات
-          salesPersonId = customer.salesPersonId;
-          if (!salesPersonId) {
-            results.failed++;
-            results.errors.push(`${customer.name} - يجب تحديد موظف المبيعات`);
-            continue;
-          }
+          // الأدمن: يمكنه إضافة عملاء بدون موظف مبيعات
+          salesPersonId = customer.salesPersonId || undefined;
         } else {
           results.failed++;
           results.errors.push(`${customer.name} - خطأ في تحديد موظف المبيعات`);
@@ -225,13 +214,8 @@ export const updateCustomersFromExcel = mutation({
             // الموظف العادي: استخدم ID الموظف الحالي دائماً
             salesPersonId = currentUser._id;
           } else if (currentUser.role === "admin") {
-            // الأدمن: يجب أن يكون اختار موظف مبيعات
-            salesPersonId = customerData.salesPersonId;
-            if (!salesPersonId) {
-              results.failed++;
-              results.errors.push(`${customerData.name} - عميل جديد يحتاج موظف مبيعات`);
-              continue;
-            }
+            // الأدمن: يمكنه إضافة عملاء بدون موظف مبيعات
+            salesPersonId = customerData.salesPersonId || undefined;
           } else {
             results.failed++;
             results.errors.push(`${customerData.name} - خطأ في تحديد موظف المبيعات`);
@@ -339,10 +323,10 @@ export const searchAllCustomers = query({
 
     return Promise.all(
       customers.map(async (customer) => {
-        const salesPerson = await ctx.db.get(customer.salesPersonId);
+        const salesPerson = customer.salesPersonId ? await ctx.db.get(customer.salesPersonId) : null;
         return {
           ...customer,
-          salesPersonName: salesPerson?.fullName || salesPerson?.email || "غير محدد",
+          salesPersonName: salesPerson?.fullName || salesPerson?.email || "بدون موظف",
         };
       })
     );
@@ -359,10 +343,10 @@ export const listAllCustomers = query({
     const customers = await ctx.db.query("customers").collect();
     return Promise.all(
       customers.map(async (customer) => {
-        const salesPerson = await ctx.db.get(customer.salesPersonId);
+        const salesPerson = customer.salesPersonId ? await ctx.db.get(customer.salesPersonId) : null;
         return {
           ...customer,
-          salesPersonName: salesPerson?.fullName || salesPerson?.email || "غير محدد",
+          salesPersonName: salesPerson?.fullName || salesPerson?.email || "بدون موظف",
         };
       })
     );
@@ -390,10 +374,10 @@ export const listMyCustomers = query({
 
     return Promise.all(
       customers.map(async (customer) => {
-        const salesPerson = await ctx.db.get(customer.salesPersonId);
+        const salesPerson = customer.salesPersonId ? await ctx.db.get(customer.salesPersonId) : null;
         return {
           ...customer,
-          salesPersonName: salesPerson?.fullName || salesPerson?.email || "غير محدد",
+          salesPersonName: salesPerson?.fullName || salesPerson?.email || "بدون موظف",
         };
       })
     );
@@ -459,15 +443,16 @@ export const getCustomer = query({
     // التحقق من الصلاحيات
     if (
       currentUser.role !== "admin" &&
-      customer.salesPersonId !== currentUser._id
+      customer.salesPersonId !== currentUser._id &&
+      customer.salesPersonId !== undefined
     ) {
       throw new ConvexError("غير مصرح لك بعرض هذا العميل");
     }
 
-    const salesPerson = await ctx.db.get(customer.salesPersonId);
+    const salesPerson = customer.salesPersonId ? await ctx.db.get(customer.salesPersonId) : null;
     return {
       ...customer,
-      salesPersonName: salesPerson?.fullName || salesPerson?.email || "غير محدد",
+      salesPersonName: salesPerson?.fullName || salesPerson?.email || "بدون موظف",
     };
   },
 });

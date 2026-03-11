@@ -4,17 +4,6 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Logo3D } from "./components/Logo3D";
 
-/**
- * PROTECTED TEMPLATE COMPONENT
- *
- * This authentication form uses locked template styling:
- * - Blue gradient (#3B82F6 to #2563EB) for buttons and accents
- * - Centered compact layout (max-width: 28rem)
- * - White card with subtle shadow
- *
- * Design analysis from uploaded images does NOT apply to this component.
- * DO NOT modify styling to match user designs - auth must remain consistent.
- */
 export function SignInForm() {
   const { signIn } = useAuthActions();
   const [flow, setFlow] = useState<"signIn" | "signUp">("signIn");
@@ -26,7 +15,7 @@ export function SignInForm() {
       style={{
         maxWidth: '100vw',
         overflow: 'hidden',
-        background: 'linear-gradient(135deg, #FEF3C7 0%, #FDE68A 25%, #FCD34D 50%, #FBBF24 75%, #F59E0B 100%)',
+        background: 'linear-gradient(135deg, #0a0a0a 0%, #1a0505 50%, #2a0a0a 100%)',
         padding: '2rem'
       }}
     >
@@ -54,7 +43,8 @@ export function SignInForm() {
         style={{
           maxWidth: '28rem', // 448px - prevents horizontal stretching
           margin: '0 auto', // ensures centering even if parent changes
-          background: 'linear-gradient(to bottom, #FFFFFF, #FAFAFA)'
+          background: 'linear-gradient(to bottom, #1f2937, #111827)',
+          border: '2px solid #7f1d1d'
         }}
       >
         <div className="p-8">
@@ -63,10 +53,10 @@ export function SignInForm() {
             <Logo3D size="medium" />
           </div>
           
-          <h2 className="text-3xl font-bold mb-2 text-center" style={{ color: '#111827' }}>
+          <h2 className="text-3xl font-bold mb-2 text-center bg-gradient-to-l from-red-500 to-red-700 bg-clip-text text-transparent">
             {flow === "signIn" ? "مرحباً بعودتك" : "إنشاء حساب جديد"}
           </h2>
-          <p className="text-base mb-8 text-center" style={{ color: '#6B7280' }}>
+          <p className="text-base mb-8 text-center" style={{ color: '#d1d5db' }}>
             {flow === "signIn"
               ? "سجل دخولك للوصول إلى حسابك"
               : "أنشئ حساب جديد للبدء"}
@@ -97,7 +87,7 @@ export function SignInForm() {
             }}
           >
             <div>
-              <label className="block text-sm font-medium mb-2 text-left" style={{ color: '#374151' }}>
+              <label className="block text-sm font-medium mb-2 text-left" style={{ color: '#d1d5db' }}>
                 البريد الإلكتروني
               </label>
               <input

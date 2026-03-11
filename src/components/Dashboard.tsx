@@ -16,19 +16,19 @@ export function Dashboard() {
   const isAdmin = currentUser?.role === "admin";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-red-950">
       {/* الهيدر - محسن للموبايل */}
-      <header className="bg-white border-b-2 border-amber-200 shadow-lg sticky top-0 z-50">
+      <header className="bg-gray-900/90 backdrop-blur-lg border-b-4 border-red-900 shadow-lg sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-3 md:px-4 py-3 md:py-4">
           <div className="flex items-center justify-between">
             {/* اللوجو والعنوان */}
             <div className="flex items-center gap-2 md:gap-4">
               <Logo3D size="small" />
               <div className="hidden sm:block">
-                <h1 className="text-lg md:text-2xl font-bold bg-gradient-to-l from-amber-600 to-yellow-600 bg-clip-text text-transparent">
+                <h1 className="text-lg md:text-2xl font-bold bg-gradient-to-l from-red-500 to-red-700 bg-clip-text text-transparent">
                   نظام إدارة التحصيلات
                 </h1>
-                <p className="text-xs md:text-sm text-gray-600">
+                <p className="text-xs md:text-sm text-gray-300">
                   مرحباً، {currentUser?.fullName || "المستخدم"} 👋
                 </p>
               </div>
@@ -37,10 +37,10 @@ export function Dashboard() {
             {/* معلومات المستخدم - مخفية على الموبايل */}
             <div className="hidden md:flex items-center gap-4">
               <div className="text-end">
-                <p className="text-sm font-semibold text-gray-700">
+                <p className="text-sm font-semibold text-white">
                   {currentUser?.role === "admin" ? "مدير النظام 👑" : "موظف مبيعات 💼"}
                 </p>
-                <p className="text-xs text-gray-500">{currentUser?.email}</p>
+                <p className="text-xs text-red-400">{currentUser?.email}</p>
               </div>
               <SignOutButton />
             </div>
@@ -48,7 +48,7 @@ export function Dashboard() {
             {/* زر القائمة للموبايل */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg bg-amber-100 text-amber-700 hover:bg-amber-200 transition-colors"
+              className="md:hidden p-2 rounded-lg bg-red-900/50 text-red-400 hover:bg-red-900 transition-colors"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {mobileMenuOpen ? (
@@ -62,13 +62,13 @@ export function Dashboard() {
 
           {/* قائمة الموبايل المنسدلة */}
           {mobileMenuOpen && (
-            <div className="md:hidden mt-4 pb-4 border-t border-amber-200 pt-4 space-y-3">
-              <div className="bg-amber-50 rounded-lg p-3">
-                <p className="text-sm font-semibold text-gray-700 mb-1">
+            <div className="md:hidden mt-4 pb-4 border-t border-red-900 pt-4 space-y-3">
+              <div className="bg-gray-800 rounded-lg p-3 border border-red-900">
+                <p className="text-sm font-semibold text-white mb-1">
                   {currentUser?.role === "admin" ? "مدير النظام 👑" : "موظف مبيعات 💼"}
                 </p>
-                <p className="text-xs text-gray-600">{currentUser?.fullName}</p>
-                <p className="text-xs text-gray-500">{currentUser?.email}</p>
+                <p className="text-xs text-gray-300">{currentUser?.fullName}</p>
+                <p className="text-xs text-red-400">{currentUser?.email}</p>
               </div>
               <SignOutButton />
             </div>
@@ -77,7 +77,7 @@ export function Dashboard() {
       </header>
 
       {/* التبويبات - محسنة للموبايل */}
-      <div className="bg-white border-b border-gray-200 shadow-sm sticky top-[72px] md:top-[88px] z-40">
+      <div className="bg-gray-900/80 backdrop-blur-lg border-b-2 border-red-900 shadow-sm sticky top-[72px] md:top-[88px] z-40">
         <div className="max-w-7xl mx-auto px-2 md:px-4">
           <div className="flex overflow-x-auto scrollbar-hide">
             {currentUser?.role === "salesperson" && (
@@ -86,8 +86,8 @@ export function Dashboard() {
                   onClick={() => setActiveTab("customers")}
                   className={`flex-1 min-w-[120px] px-3 md:px-6 py-3 md:py-4 text-xs md:text-sm font-bold transition-all whitespace-nowrap ${
                     activeTab === "customers"
-                      ? "text-blue-600 border-b-4 border-blue-600 bg-blue-50"
-                      : "text-gray-600 hover:text-blue-600 hover:bg-blue-50"
+                      ? "text-white border-b-4 border-red-600 bg-red-900/50"
+                      : "text-gray-400 hover:text-white hover:bg-red-900/30"
                   }`}
                 >
                   <span className="flex items-center justify-center gap-1 md:gap-2">
@@ -101,8 +101,8 @@ export function Dashboard() {
                   onClick={() => setActiveTab("collections")}
                   className={`flex-1 min-w-[120px] px-3 md:px-6 py-3 md:py-4 text-xs md:text-sm font-bold transition-all whitespace-nowrap ${
                     activeTab === "collections"
-                      ? "text-green-600 border-b-4 border-green-600 bg-green-50"
-                      : "text-gray-600 hover:text-green-600 hover:bg-green-50"
+                      ? "text-white border-b-4 border-red-600 bg-red-900/50"
+                      : "text-gray-400 hover:text-white hover:bg-red-900/30"
                   }`}
                 >
                   <span className="flex items-center justify-center gap-1 md:gap-2">
@@ -121,8 +121,8 @@ export function Dashboard() {
                   onClick={() => setActiveTab("customers")}
                   className={`flex-1 min-w-[100px] px-2 md:px-6 py-3 md:py-4 text-xs md:text-sm font-bold transition-all whitespace-nowrap ${
                     activeTab === "customers"
-                      ? "text-blue-600 border-b-4 border-blue-600 bg-blue-50"
-                      : "text-gray-600 hover:text-blue-600 hover:bg-blue-50"
+                      ? "text-white border-b-4 border-red-600 bg-red-900/50"
+                      : "text-gray-400 hover:text-white hover:bg-red-900/30"
                   }`}
                 >
                   <span className="flex items-center justify-center gap-1 md:gap-2">
@@ -136,8 +136,8 @@ export function Dashboard() {
                   onClick={() => setActiveTab("collections")}
                   className={`flex-1 min-w-[100px] px-2 md:px-6 py-3 md:py-4 text-xs md:text-sm font-bold transition-all whitespace-nowrap ${
                     activeTab === "collections"
-                      ? "text-green-600 border-b-4 border-green-600 bg-green-50"
-                      : "text-gray-600 hover:text-green-600 hover:bg-green-50"
+                      ? "text-white border-b-4 border-red-600 bg-red-900/50"
+                      : "text-gray-400 hover:text-white hover:bg-red-900/30"
                   }`}
                 >
                   <span className="flex items-center justify-center gap-1 md:gap-2">
@@ -151,8 +151,8 @@ export function Dashboard() {
                   onClick={() => setActiveTab("admin")}
                   className={`flex-1 min-w-[100px] px-2 md:px-6 py-3 md:py-4 text-xs md:text-sm font-bold transition-all whitespace-nowrap ${
                     activeTab === "admin"
-                      ? "text-purple-600 border-b-4 border-purple-600 bg-purple-50"
-                      : "text-gray-600 hover:text-purple-600 hover:bg-purple-50"
+                      ? "text-white border-b-4 border-red-700 bg-red-900/70"
+                      : "text-gray-400 hover:text-white hover:bg-red-900/30"
                   }`}
                 >
                   <span className="flex items-center justify-center gap-1 md:gap-2">

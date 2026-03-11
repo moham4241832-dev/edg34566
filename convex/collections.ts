@@ -50,7 +50,7 @@ export const addCollection = mutation({
     // إضافة عملية التحصيل
     await ctx.db.insert("collections", {
       customerId: args.customerId,
-      salesPersonId: customer.salesPersonId,
+      salesPersonId: customer.salesPersonId || userId,
       goldAmount: args.goldAmount,
       cashAmount: args.cashAmount,
       notes: args.notes,
@@ -283,10 +283,10 @@ export const getCustomersForCollection = query({
     // إضافة معلومات المندوب لكل عميل
     const customersWithSalesPerson = await Promise.all(
       customers.map(async (customer) => {
-        const salesPerson = await ctx.db.get(customer.salesPersonId);
+        const salesPerson = customer.salesPersonId ? await ctx.db.get(customer.salesPersonId) : null;
         return {
           ...customer,
-          salesPersonName: salesPerson?.fullName || "غير محدد",
+          salesPersonName: salesPerson?.fullName || "بدون موظف",
         };
       })
     );
