@@ -220,8 +220,8 @@ export function SalesManagement() {
       {/* الرسوم البيانية */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* مبيعات عيار 21 حسب الفرع */}
-        <div className="bg-gray-900 rounded-2xl shadow-xl p-6 border-2 border-amber-900">
-          <h4 className="text-lg font-bold text-amber-400 mb-4 flex items-center gap-2">
+        <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-2xl shadow-xl p-6 border-2 border-amber-300">
+          <h4 className="text-xl font-bold text-amber-900 mb-4 flex items-center gap-2">
             <span className="text-2xl">📊</span>
             مبيعات عيار 21 حسب الفرع
           </h4>
@@ -241,16 +241,16 @@ export function SalesManagement() {
                 return (
                   <div key={branch.branch} className="space-y-1">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm font-semibold text-amber-300">
+                      <span className="text-lg font-bold text-amber-900">
                         {branch.branch}
                       </span>
-                      <span className="text-sm font-bold text-amber-400">
+                      <span className="text-lg font-bold text-amber-800">
                         {gold21Total.toFixed(2)} جم
                       </span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                    <div className="w-full bg-gray-300 rounded-full h-5 overflow-hidden">
                       <div
-                        className="bg-gradient-to-r from-amber-400 to-yellow-500 h-3 rounded-full transition-all duration-500"
+                        className="bg-gradient-to-r from-amber-500 to-yellow-600 h-5 rounded-full transition-all duration-500"
                         style={{ width: `${percentage}%` }}
                       />
                     </div>
@@ -263,7 +263,7 @@ export function SalesManagement() {
 
         {/* مبيعات عيار 18 حسب الفرع */}
         <div className="bg-white rounded-2xl shadow-xl p-6 border-2 border-blue-200">
-          <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <h4 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
             <span className="text-2xl">📈</span>
             مبيعات عيار 18 حسب الفرع
           </h4>
@@ -283,16 +283,16 @@ export function SalesManagement() {
                 return (
                   <div key={branch.branch} className="space-y-1">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm font-semibold text-gray-700">
+                      <span className="text-lg font-bold text-gray-900">
                         {branch.branch}
                       </span>
-                      <span className="text-sm font-bold text-blue-600">
+                      <span className="text-lg font-bold text-blue-700">
                         {gold18Total.toFixed(2)} جم
                       </span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                    <div className="w-full bg-gray-200 rounded-full h-5 overflow-hidden">
                       <div
-                        className="bg-gradient-to-r from-blue-400 to-indigo-500 h-3 rounded-full transition-all duration-500"
+                        className="bg-gradient-to-r from-blue-400 to-indigo-500 h-5 rounded-full transition-all duration-500"
                         style={{ width: `${percentage}%` }}
                       />
                     </div>
@@ -305,7 +305,7 @@ export function SalesManagement() {
 
         {/* مبيعات ستار عيار 18 حسب الفرع */}
         <div className="bg-white rounded-2xl shadow-xl p-6 border-2 border-purple-200">
-          <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <h4 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
             <span className="text-2xl">⭐</span>
             مبيعات ستار عيار 18 حسب الفرع
           </h4>
@@ -324,16 +324,16 @@ export function SalesManagement() {
                 return (
                   <div key={branch.branch} className="space-y-1">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm font-semibold text-gray-700">
+                      <span className="text-lg font-bold text-gray-900">
                         {branch.branch}
                       </span>
-                      <span className="text-sm font-bold text-purple-600">
+                      <span className="text-lg font-bold text-purple-700">
                         {branch.gold18Star.toFixed(2)} جم
                       </span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                    <div className="w-full bg-gray-200 rounded-full h-5 overflow-hidden">
                       <div
-                        className="bg-gradient-to-r from-purple-400 to-pink-500 h-3 rounded-full transition-all duration-500"
+                        className="bg-gradient-to-r from-purple-400 to-pink-500 h-5 rounded-full transition-all duration-500"
                         style={{ width: `${percentage}%` }}
                       />
                     </div>
@@ -346,7 +346,7 @@ export function SalesManagement() {
 
         {/* مبيعات ساده عيار 21 حسب الفرع */}
         <div className="bg-white rounded-2xl shadow-xl p-6 border-2 border-green-200">
-          <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <h4 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
             <span className="text-2xl">💎</span>
             مبيعات ساده عيار 21 حسب الفرع
           </h4>
@@ -365,16 +365,16 @@ export function SalesManagement() {
                 return (
                   <div key={branch.branch} className="space-y-1">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm font-semibold text-gray-700">
+                      <span className="text-lg font-bold text-gray-900">
                         {branch.branch}
                       </span>
-                      <span className="text-sm font-bold text-green-600">
+                      <span className="text-lg font-bold text-green-700">
                         {branch.gold21Plain.toFixed(2)} جم
                       </span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                    <div className="w-full bg-gray-200 rounded-full h-5 overflow-hidden">
                       <div
-                        className="bg-gradient-to-r from-green-400 to-emerald-500 h-3 rounded-full transition-all duration-500"
+                        className="bg-gradient-to-r from-green-400 to-emerald-500 h-5 rounded-full transition-all duration-500"
                         style={{ width: `${percentage}%` }}
                       />
                     </div>
@@ -388,16 +388,16 @@ export function SalesManagement() {
 
       {/* جدول الإجماليات */}
       <div className="bg-white rounded-2xl shadow-xl p-6 border-2 border-indigo-200">
-        <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+        <h4 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
           <span className="text-2xl">📋</span>
           إجماليات المبيعات
         </h4>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
           <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-xl p-4 border-2 border-amber-200">
-            <p className="text-sm font-medium text-amber-800 mb-1">
+            <p className="text-lg font-bold text-amber-900 mb-1">
               إجمالي عيار 21
             </p>
-            <p className="text-2xl font-bold text-amber-900">
+            <p className="text-4xl font-bold text-amber-900">
               {salesByBranch
                 .reduce((sum, b) => sum + b.gold21Plain + b.gold21Star, 0)
                 .toFixed(2)}{" "}
@@ -405,10 +405,10 @@ export function SalesManagement() {
             </p>
           </div>
           <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 border-2 border-blue-200">
-            <p className="text-sm font-medium text-blue-800 mb-1">
+            <p className="text-lg font-bold text-blue-900 mb-1">
               إجمالي عيار 18
             </p>
-            <p className="text-2xl font-bold text-blue-900">
+            <p className="text-4xl font-bold text-blue-900">
               {salesByBranch
                 .reduce((sum, b) => sum + b.gold18Plain + b.gold18Star, 0)
                 .toFixed(2)}{" "}
@@ -416,10 +416,10 @@ export function SalesManagement() {
             </p>
           </div>
           <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border-2 border-green-200">
-            <p className="text-sm font-medium text-green-800 mb-1">
+            <p className="text-lg font-bold text-green-900 mb-1">
               إجمالي المبيعات
             </p>
-            <p className="text-2xl font-bold text-green-900">
+            <p className="text-4xl font-bold text-green-900">
               {salesByBranch
                 .reduce((sum, b) => sum + b.totalSales, 0)
                 .toFixed(2)}{" "}

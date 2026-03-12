@@ -373,18 +373,18 @@ export function CustomerManagement() {
           </div>
 
           {/* شريط البحث والفلاتر */}
-          <div className="mb-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="mb-4 space-y-3">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="🔍 ابحث بالاسم أو الهاتف..."
-              className="w-full px-4 py-3 rounded-lg border-2 border-blue-200 focus:border-blue-500 text-start"
+              className="w-full px-4 py-3 rounded-lg border-2 border-blue-200 focus:border-blue-500 text-start bg-white text-gray-900 text-base"
             />
             <select
               value={selectedRegion}
               onChange={(e) => setSelectedRegion(e.target.value)}
-              className="w-full px-4 py-3 rounded-lg border-2 border-purple-200 focus:border-purple-500 text-start bg-white"
+              className="w-full px-4 py-3 rounded-lg border-2 border-purple-200 focus:border-purple-500 text-start bg-white text-gray-900 text-base"
             >
               <option value="all">📍 جميع المناطق</option>
               {uniqueRegions.map(region => (
@@ -444,18 +444,24 @@ export function CustomerManagement() {
                 return (
                   <div
                     key={customer._id}
-                    className="bg-white rounded-2xl p-5 hover:shadow-2xl transition-all duration-300 border-2 border-gray-100 hover:border-blue-300 transform hover:-translate-y-1"
+                    className={`rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 p-4 sm:p-5 border-2 ${
+                      isOverLimit 
+                        ? 'bg-gradient-to-br from-red-950 to-black border-red-700 ring-2 ring-red-500/30' 
+                        : isNearLimit 
+                        ? 'bg-gradient-to-br from-orange-950 to-black border-orange-700 ring-2 ring-orange-500/30'
+                        : 'bg-gradient-to-br from-gray-900 to-black border-red-900 hover:border-red-700'
+                    }`}
                   >
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex-1">
-                        <h5 className="text-lg font-bold text-gray-900 mb-1">{customer.name}</h5>
-                        <p className="text-sm text-gray-600 flex items-center gap-2 mb-1">
+                    <div className="flex items-start justify-between mb-3 gap-2">
+                      <div className="flex-1 min-w-0">
+                        <h5 className="text-base sm:text-lg font-bold text-white mb-1 break-words">{customer.name}</h5>
+                        <p className="text-sm text-red-300 flex items-center gap-2 mb-1">
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                           </svg>
                           {customer.phone}
                         </p>
-                        <p className="text-sm text-gray-600 flex items-center gap-2">
+                        <p className="text-sm text-red-300 flex items-center gap-2">
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -463,7 +469,7 @@ export function CustomerManagement() {
                           {customer.region}
                         </p>
                         {salesPerson && (
-                          <p className="text-xs text-blue-600 mt-1 flex items-center gap-1">
+                          <p className="text-xs text-red-400 mt-1 flex items-center gap-1">
                             <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                             </svg>
@@ -473,13 +479,13 @@ export function CustomerManagement() {
                       </div>
 
                       {isAdmin && (
-                        <div className="flex gap-2">
+                        <div className="flex gap-1.5 sm:gap-2 flex-shrink-0">
                           <button
                           onClick={() => handleEdit(customer)}
-                          className="p-2.5 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all shadow-md hover:shadow-lg transform hover:scale-110"
+                          className="p-2 sm:p-2.5 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all shadow-md hover:shadow-lg transform hover:scale-110"
                           title="تعديل"
                         >
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                           </svg>
                         </button>
@@ -497,22 +503,26 @@ export function CustomerManagement() {
                     </div>
 
                     {/* المديونيات */}
-                    <div className="grid grid-cols-2 gap-3 mb-3">
-                      <div className="bg-gradient-to-br from-amber-400 to-yellow-500 rounded-xl p-4 shadow-md hover:shadow-lg transition-all">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                      <div className="bg-gradient-to-br from-red-950 to-black rounded-xl p-3 sm:p-4 border-2 border-red-900 hover:border-red-700 transition-all shadow-lg">
                         <div className="flex items-center gap-2 mb-2">
-                          <span className="text-2xl">💰</span>
-                          <p className="text-xs font-bold text-white">مديونية ذهب</p>
+                          <svg className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6z" />
+                          </svg>
+                          <span className="text-xs font-medium text-red-300">مديونية ذهب</span>
                         </div>
-                        <p className="text-2xl font-black text-white mb-1">{customer.goldDebt21.toFixed(2)}</p>
-                        <p className="text-xs text-amber-100 font-medium">جرام عيار 21</p>
+                        <p className="text-xl sm:text-2xl font-bold text-yellow-400">{customer.goldDebt21.toFixed(2)}</p>
+                        <p className="text-xs text-red-400 mt-1">جرام عيار 21</p>
                       </div>
-                      <div className="bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl p-4 shadow-md hover:shadow-lg transition-all">
+                      <div className="bg-gradient-to-br from-red-950 to-black rounded-xl p-3 sm:p-4 border-2 border-red-900 hover:border-red-700 transition-all shadow-lg">
                         <div className="flex items-center gap-2 mb-2">
-                          <span className="text-2xl">💵</span>
-                          <p className="text-xs font-bold text-white">مديونية نقدية</p>
+                          <svg className="w-4 h-4 sm:w-5 sm:h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span className="text-xs font-medium text-red-300">مديونية نقدية</span>
                         </div>
-                        <p className="text-2xl font-black text-white mb-1">{customer.cashDebt.toFixed(2)}</p>
-                        <p className="text-xs text-emerald-100 font-medium">جنيه مصري</p>
+                        <p className="text-xl sm:text-2xl font-bold text-green-400">{customer.cashDebt.toFixed(2)}</p>
+                        <p className="text-xs text-red-400 mt-1">جنيه مصري</p>
                       </div>
                     </div>
 
@@ -536,39 +546,39 @@ export function CustomerManagement() {
                           setSelectedOverdueCustomerId(customer._id);
                           setSelectedOverdueCustomerName(customer.name);
                         }}
-                        className="w-full bg-gradient-to-br from-rose-50 to-red-50 border-2 border-rose-300 rounded-lg p-3 hover:shadow-lg transition-all"
+                        className="w-full bg-gradient-to-br from-rose-950 to-black border-2 border-rose-700 rounded-lg p-3 hover:shadow-lg transition-all"
                       >
                         <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center gap-2">
-                            <svg className="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <span className="text-sm font-bold text-rose-900">⏰ المتأخرات</span>
+                            <span className="text-sm font-bold text-rose-200">المتأخرات</span>
                           </div>
-                          <span className="text-xs bg-rose-200 text-rose-800 px-2 py-1 rounded-full font-bold">
-                            اضغط للتفاصيل
+                          <span className="text-xs bg-gradient-to-l from-rose-700 to-rose-900 text-white px-3 py-1.5 rounded-lg font-semibold border border-rose-600">
+                            عرض الكل
                           </span>
                         </div>
                         
                         {/* إجمالي المتأخرات */}
-                        <div className="grid grid-cols-2 gap-2 mb-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
                           {totalGoldOverdue > 0 && (
-                            <div className="bg-amber-100 rounded-lg p-2 border border-amber-300">
-                              <p className="text-xs font-medium text-amber-700 mb-1">💰 ذهب</p>
-                              <p className="text-xl font-bold text-amber-900">
+                            <div className="bg-gradient-to-br from-amber-950 to-black border border-amber-900 rounded-lg p-2">
+                              <p className="text-xs font-medium text-amber-400 mb-1">💰 ذهب</p>
+                              <p className="text-xl font-bold text-amber-300">
                                 {totalGoldOverdue.toFixed(2)}
                               </p>
-                              <p className="text-xs text-amber-700">جرام</p>
+                              <p className="text-xs text-amber-500">جرام</p>
                             </div>
                           )}
                           
                           {totalCashOverdue > 0 && (
-                            <div className="bg-green-100 rounded-lg p-2 border border-green-300">
-                              <p className="text-xs font-medium text-green-700 mb-1">💵 نقدي</p>
-                              <p className="text-xl font-bold text-green-900">
+                            <div className="bg-gradient-to-br from-green-950 to-black border border-green-900 rounded-lg p-2">
+                              <p className="text-xs font-medium text-green-400 mb-1">💵 نقدي</p>
+                              <p className="text-xl font-bold text-green-300">
                                 {totalCashOverdue.toFixed(2)}
                               </p>
-                              <p className="text-xs text-green-700">جنيه</p>
+                              <p className="text-xs text-green-500">جنيه</p>
                             </div>
                           )}
                         </div>
@@ -578,70 +588,70 @@ export function CustomerManagement() {
                           {overdueStatus && (
                             <>
                               {(toNumber(overdueStatus.goldOverdue25) > 0 || toNumber(overdueStatus.cashOverdue25) > 0) && (
-                                <div className="flex items-center justify-between bg-yellow-50 px-2 py-1 rounded border border-yellow-200">
-                                  <span className="font-medium text-yellow-800">📅 25-39 يوم</span>
+                                <div className="flex items-center justify-between bg-gradient-to-br from-green-950 to-black border border-green-900 px-2 py-1.5 rounded">
+                                  <span className="font-medium text-green-400">🟢 25 يوم</span>
                                   <div className="flex gap-2">
                                     {toNumber(overdueStatus.goldOverdue25) > 0 && (
-                                      <span className="text-amber-700 font-bold">{toNumber(overdueStatus.goldOverdue25).toFixed(1)}ج</span>
+                                      <span className="text-amber-300 font-bold">{toNumber(overdueStatus.goldOverdue25).toFixed(1)}ج</span>
                                     )}
                                     {toNumber(overdueStatus.cashOverdue25) > 0 && (
-                                      <span className="text-green-700 font-bold">{toNumber(overdueStatus.cashOverdue25).toFixed(0)}£</span>
+                                      <span className="text-green-300 font-bold">{toNumber(overdueStatus.cashOverdue25).toFixed(0)}£</span>
                                     )}
                                   </div>
                                 </div>
                               )}
                               
                               {(toNumber(overdueStatus.goldOverdue40) > 0 || toNumber(overdueStatus.cashOverdue40) > 0) && (
-                                <div className="flex items-center justify-between bg-orange-50 px-2 py-1 rounded border border-orange-200">
-                                  <span className="font-medium text-orange-800">📅 40-59 يوم</span>
+                                <div className="flex items-center justify-between bg-gradient-to-br from-blue-950 to-black border border-blue-900 px-2 py-1.5 rounded">
+                                  <span className="font-medium text-blue-400">🔵 40 يوم</span>
                                   <div className="flex gap-2">
                                     {toNumber(overdueStatus.goldOverdue40) > 0 && (
-                                      <span className="text-amber-700 font-bold">{toNumber(overdueStatus.goldOverdue40).toFixed(1)}ج</span>
+                                      <span className="text-amber-300 font-bold">{toNumber(overdueStatus.goldOverdue40).toFixed(1)}ج</span>
                                     )}
                                     {toNumber(overdueStatus.cashOverdue40) > 0 && (
-                                      <span className="text-green-700 font-bold">{toNumber(overdueStatus.cashOverdue40).toFixed(0)}£</span>
+                                      <span className="text-green-300 font-bold">{toNumber(overdueStatus.cashOverdue40).toFixed(0)}£</span>
                                     )}
                                   </div>
                                 </div>
                               )}
                               
                               {(toNumber(overdueStatus.goldOverdue60) > 0 || toNumber(overdueStatus.cashOverdue60) > 0) && (
-                                <div className="flex items-center justify-between bg-red-50 px-2 py-1 rounded border border-red-200">
-                                  <span className="font-medium text-red-800">📅 60-89 يوم</span>
+                                <div className="flex items-center justify-between bg-gradient-to-br from-yellow-950 to-black border border-yellow-900 px-2 py-1.5 rounded">
+                                  <span className="font-medium text-yellow-400">🟡 60 يوم</span>
                                   <div className="flex gap-2">
                                     {toNumber(overdueStatus.goldOverdue60) > 0 && (
-                                      <span className="text-amber-700 font-bold">{toNumber(overdueStatus.goldOverdue60).toFixed(1)}ج</span>
+                                      <span className="text-amber-300 font-bold">{toNumber(overdueStatus.goldOverdue60).toFixed(1)}ج</span>
                                     )}
                                     {toNumber(overdueStatus.cashOverdue60) > 0 && (
-                                      <span className="text-green-700 font-bold">{toNumber(overdueStatus.cashOverdue60).toFixed(0)}£</span>
+                                      <span className="text-green-300 font-bold">{toNumber(overdueStatus.cashOverdue60).toFixed(0)}£</span>
                                     )}
                                   </div>
                                 </div>
                               )}
                               
                               {(toNumber(overdueStatus.goldOverdue90) > 0 || toNumber(overdueStatus.cashOverdue90) > 0) && (
-                                <div className="flex items-center justify-between bg-rose-50 px-2 py-1 rounded border border-rose-200">
-                                  <span className="font-medium text-rose-800">📅 90 يوم</span>
+                                <div className="flex items-center justify-between bg-gradient-to-br from-orange-950 to-black border border-orange-900 px-2 py-1.5 rounded">
+                                  <span className="font-medium text-orange-400">🟠 90 يوم</span>
                                   <div className="flex gap-2">
                                     {toNumber(overdueStatus.goldOverdue90) > 0 && (
-                                      <span className="text-amber-700 font-bold">{toNumber(overdueStatus.goldOverdue90).toFixed(1)}ج</span>
+                                      <span className="text-amber-300 font-bold">{toNumber(overdueStatus.goldOverdue90).toFixed(1)}ج</span>
                                     )}
                                     {toNumber(overdueStatus.cashOverdue90) > 0 && (
-                                      <span className="text-green-700 font-bold">{toNumber(overdueStatus.cashOverdue90).toFixed(0)}£</span>
+                                      <span className="text-green-300 font-bold">{toNumber(overdueStatus.cashOverdue90).toFixed(0)}£</span>
                                     )}
                                   </div>
                                 </div>
                               )}
                               
                               {(toNumber(overdueStatus.goldOverdue90Plus) > 0 || toNumber(overdueStatus.cashOverdue90Plus) > 0) && (
-                                <div className="flex items-center justify-between bg-rose-100 px-2 py-1 rounded border border-rose-300">
-                                  <span className="font-medium text-rose-900">⚠️ +90 يوم</span>
+                                <div className="flex items-center justify-between bg-gradient-to-br from-red-950 to-black border border-red-900 px-2 py-1.5 rounded">
+                                  <span className="font-medium text-red-400">🔴 +90 يوم</span>
                                   <div className="flex gap-2">
                                     {toNumber(overdueStatus.goldOverdue90Plus) > 0 && (
-                                      <span className="text-amber-800 font-bold">{toNumber(overdueStatus.goldOverdue90Plus).toFixed(1)}ج</span>
+                                      <span className="text-amber-300 font-bold">{toNumber(overdueStatus.goldOverdue90Plus).toFixed(1)}ج</span>
                                     )}
                                     {toNumber(overdueStatus.cashOverdue90Plus) > 0 && (
-                                      <span className="text-green-800 font-bold">{toNumber(overdueStatus.cashOverdue90Plus).toFixed(0)}£</span>
+                                      <span className="text-green-300 font-bold">{toNumber(overdueStatus.cashOverdue90Plus).toFixed(0)}£</span>
                                     )}
                                   </div>
                                 </div>

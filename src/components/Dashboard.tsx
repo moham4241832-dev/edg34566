@@ -24,11 +24,11 @@ export function Dashboard() {
             {/* اللوجو والعنوان */}
             <div className="flex items-center gap-2 md:gap-4">
               <Logo3D size="small" />
-              <div className="hidden sm:block">
-                <h1 className="text-lg md:text-2xl font-bold bg-gradient-to-l from-red-500 to-red-700 bg-clip-text text-transparent">
+              <div>
+                <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-l from-red-500 to-red-700 bg-clip-text text-transparent">
                   نظام إدارة التحصيلات
                 </h1>
-                <p className="text-xs md:text-sm text-gray-300">
+                <p className="text-sm md:text-base text-gray-300">
                   مرحباً، {currentUser?.fullName || "المستخدم"} 👋
                 </p>
               </div>

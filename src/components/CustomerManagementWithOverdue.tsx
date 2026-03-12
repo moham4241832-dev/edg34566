@@ -295,7 +295,7 @@ export function CustomerManagementWithOverdue() {
               return (
                 <div
                   key={customer._id}
-                  className="bg-gray-900 rounded-2xl p-5 hover:shadow-2xl transition-all duration-300 border-2 border-red-900 hover:border-red-700 transform hover:-translate-y-1"
+                  className="backdrop-blur-lg bg-white/10 rounded-2xl p-5 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 hover:bg-white/15"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">

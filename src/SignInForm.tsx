@@ -99,7 +99,8 @@ export function SignInForm() {
                 style={{
                   background: '#FFFFFF',
                   border: '1px solid rgba(229, 231, 235, 0.7)',
-                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.04)'
+                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.04)',
+                  color: '#1f2937'
                 }}
                 onFocus={(e) => {
                   e.currentTarget.style.border = '1px solid rgba(59, 130, 246, 0.3)';
@@ -113,7 +114,7 @@ export function SignInForm() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2 text-left" style={{ color: '#374151' }}>
+              <label className="block text-sm font-medium mb-2 text-left" style={{ color: '#d1d5db' }}>
                 كلمة المرور
               </label>
               <input
@@ -125,7 +126,8 @@ export function SignInForm() {
                 style={{
                   background: '#FFFFFF',
                   border: '1px solid rgba(229, 231, 235, 0.7)',
-                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.04)'
+                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.04)',
+                  color: '#1f2937'
                 }}
                 onFocus={(e) => {
                   e.currentTarget.style.border = '1px solid rgba(59, 130, 246, 0.3)';
