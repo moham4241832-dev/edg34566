@@ -1,6 +1,7 @@
-import { Authenticated, Unauthenticated, useQuery } from "convex/react";
+import { Authenticated, Unauthenticated, useQuery, useMutation } from "convex/react";
 import { SignInForm } from "./SignInForm";
 import { api } from "../convex/_generated/api";
+import { useEffect, useState } from "react";
 import { Dashboard } from "./components/Dashboard";
 import { CustomerManagement } from "./components/CustomerManagement";
 import { CollectionTracking } from "./components/CollectionTracking";
@@ -9,19 +10,31 @@ import { AdminPanel } from "./components/AdminPanel";
 import { ExcelImport } from "./components/ExcelImport";
 import { SignOutButton } from "./SignOutButton";
 import { NotificationBell } from "./components/NotificationBell";
-import { useState } from "react";
 import { Toaster } from "sonner";
 import { Logo3D } from "./components/Logo3D";
 import { SalesManagement } from "./components/SalesManagement";
+import { ChangePasswordModal } from "./components/ChangePasswordModal";
 
 type Tab = "dashboard" | "customers" | "collections" | "reports" | "admin" | "import" | "sales";
 
 function App() {
   const [activeTab, setActiveTab] = useState<Tab>("dashboard");
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
   const currentUser = useQuery(api.users.getCurrentUser);
+  const recordLogin = useMutation(api.security.recordLogin);
 
   const isAdmin = currentUser?.role === "admin";
   const needsApproval = currentUser && !currentUser.isApproved && currentUser.role !== "admin";
+
+  // تسجيل الدخول عند تحميل التطبيق
+  useEffect(() => {
+    if (currentUser && currentUser.isApproved) {
+      const deviceInfo = `${navigator.userAgent.substring(0, 100)}`;
+      recordLogin({ deviceInfo }).catch(() => {
+        // تجاهل الأخطاء في تسجيل الدخول
+      });
+    }
+  }, [currentUser?.isApproved]);
 
   return (
     <>
@@ -89,6 +102,13 @@ function App() {
                   </div>
                   <div className="flex items-center gap-2 sm:gap-4">
                     <NotificationBell />
+                    <button
+                      onClick={() => setShowPasswordModal(true)}
+                      className="px-3 py-2 bg-gray-800 hover:bg-red-900 text-white rounded-lg transition-all border border-red-900"
+                      title="تغيير كلمة المرور"
+                    >
+                      🔑
+                    </button>
                     <div className="text-left hidden md:block">
                       <p className="text-sm font-semibold text-white">
                         {currentUser?.fullName || currentUser?.email}
@@ -202,6 +222,11 @@ function App() {
                 </p>
               </div>
             </footer>
+
+            {/* Modal تغيير كلمة المرور */}
+            {showPasswordModal && (
+              <ChangePasswordModal onClose={() => setShowPasswordModal(false)} />
+            )}
           </div>
         )}
       </Authenticated>

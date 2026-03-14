@@ -20,6 +20,7 @@ import type * as overdue from "../overdue.js";
 import type * as reports from "../reports.js";
 import type * as router from "../router.js";
 import type * as sales from "../sales.js";
+import type * as security from "../security.js";
 import type * as users from "../users.js";
 
 import type {
@@ -49,6 +50,7 @@ declare const fullApi: ApiFromModules<{
   reports: typeof reports;
   router: typeof router;
   sales: typeof sales;
+  security: typeof security;
   users: typeof users;
 }>;
 declare const fullApiWithMounts: typeof fullApi;

@@ -94,6 +94,26 @@ const applicationTables = {
     .index("by_salesperson", ["salesperson"])
     .index("by_date", ["saleDate"])
     .index("by_branch_and_date", ["branch", "saleDate"]),
+
+  loginHistory: defineTable({
+    userId: v.id("users"),
+    loginTime: v.number(),
+    ipAddress: v.optional(v.string()),
+    userAgent: v.optional(v.string()),
+    deviceInfo: v.optional(v.string()),
+  })
+    .index("by_user", ["userId"])
+    .index("by_time", ["loginTime"])
+    .index("by_user_and_time", ["userId", "loginTime"]),
+
+  passwordChanges: defineTable({
+    userId: v.id("users"),
+    changedAt: v.number(),
+    changedBy: v.id("users"),
+    reason: v.optional(v.string()),
+  })
+    .index("by_user", ["userId"])
+    .index("by_time", ["changedAt"]),
 };
 
 export default defineSchema({

@@ -7,6 +7,7 @@ import { CustomerManagementWithOverdue } from "./CustomerManagementWithOverdue";
 import { OverdueExcelUpdater } from "./OverdueExcelUpdater";
 import { FixOverdueButton } from "./FixOverdueButton";
 import { PendingUsersPanel } from "./PendingUsersPanel";
+import { SecurityPanel } from "./SecurityPanel";
 import * as XLSX from "xlsx";
 import { toast } from "sonner";
 import { useState, useRef } from "react";
@@ -233,6 +234,7 @@ export function AdminPanel() {
       </div>
 
       <PendingUsersPanel />
+      <SecurityPanel />
       <AdminCollectionStats />
       <WeeklyReport />
       <CustomerManagementWithOverdue />
