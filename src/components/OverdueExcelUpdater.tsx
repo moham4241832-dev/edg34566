@@ -52,8 +52,13 @@ export function OverdueExcelUpdater() {
   };
 
   const parseNumber = (value: any): number => {
+    if (value === null || value === undefined || value === '') return 0;
     if (typeof value === 'number') return value;
-    const num = parseFloat(String(value).trim());
+    
+    // تنظيف النص من الفواصل والمسافات
+    const cleanValue = String(value).trim().replace(/,/g, '');
+    const num = parseFloat(cleanValue);
+    
     return isNaN(num) ? 0 : num;
   };
 
@@ -84,10 +89,11 @@ export function OverdueExcelUpdater() {
       const data = XLSX.utils.sheet_to_json(worksheet);
 
       const processedResults = {
-        total: customers.length,
+        total: data.length,
         found: 0,
         notFound: 0,
         updated: [] as any[],
+        errors: [] as string[],
       };
 
       toast.info(`جاري معالجة ${data.length} سطر من Excel...`);
@@ -96,19 +102,25 @@ export function OverdueExcelUpdater() {
         const customerName = row["اسم العميل"]?.toString().trim();
         const customerPhone = row["رقم الهاتف"]?.toString().trim();
         
-        if (!customerName && !customerPhone) continue;
-
-        const customer = customers.find(c => 
-          (customerName && c.name.includes(customerName)) ||
-          (customerPhone && c.phone.includes(customerPhone))
-        );
-
-        if (!customer) {
+        if (!customerName && !customerPhone) {
           processedResults.notFound++;
           continue;
         }
 
-        // قراءة المتأخرات حسب الفئات (أرقام)
+        // البحث عن العميل بالاسم أو الهاتف
+        const customer = customers.find(c => {
+          const nameMatch = customerName && c.name.trim() === customerName;
+          const phoneMatch = customerPhone && c.phone.trim() === customerPhone;
+          return nameMatch || phoneMatch;
+        });
+
+        if (!customer) {
+          processedResults.notFound++;
+          processedResults.errors.push(`لم يتم العثور على: ${customerName || customerPhone}`);
+          continue;
+        }
+
+        // قراءة المتأخرات حسب الفئات
         const goldOverdue25 = parseNumber(row["ذهب 0-25 يوم"]);
         const cashOverdue25 = parseNumber(row["نقدي 0-25 يوم"]);
         const goldOverdue40 = parseNumber(row["ذهب 0-40 يوم"]);
@@ -120,56 +132,54 @@ export function OverdueExcelUpdater() {
         const goldOverdue90Plus = parseNumber(row["ذهب +90 يوم"]);
         const cashOverdue90Plus = parseNumber(row["نقدي +90 يوم"]);
 
-        // حفظ كل الفئات
-        const hasAnyOverdue = goldOverdue25 > 0 || cashOverdue25 > 0 || 
-                              goldOverdue40 > 0 || cashOverdue40 > 0 ||
-                              goldOverdue60 > 0 || cashOverdue60 > 0 ||
-                              goldOverdue90 > 0 || cashOverdue90 > 0 ||
-                              goldOverdue90Plus > 0 || cashOverdue90Plus > 0;
+        // حساب الإجمالي للتحقق
+        const totalGold = goldOverdue25 + goldOverdue40 + goldOverdue60 + goldOverdue90 + goldOverdue90Plus;
+        const totalCash = cashOverdue25 + cashOverdue40 + cashOverdue60 + cashOverdue90 + cashOverdue90Plus;
 
-        if (hasAnyOverdue) {
-          try {
-            await updateOverdue({
-              customerId: customer._id,
-              goldOverdue25,
-              cashOverdue25,
-              goldOverdue40,
-              cashOverdue40,
-              goldOverdue60,
-              cashOverdue60,
-              goldOverdue90,
-              cashOverdue90,
-              goldOverdue90Plus,
-              cashOverdue90Plus,
-            });
+        // حفظ البيانات حتى لو كانت أصفار (لتحديث البيانات القديمة)
+        try {
+          await updateOverdue({
+            customerId: customer._id,
+            goldOverdue25,
+            cashOverdue25,
+            goldOverdue40,
+            cashOverdue40,
+            goldOverdue60,
+            cashOverdue60,
+            goldOverdue90,
+            cashOverdue90,
+            goldOverdue90Plus,
+            cashOverdue90Plus,
+          });
 
-            processedResults.found++;
-            processedResults.updated.push({
-              name: customer.name,
-              goldOverdue25,
-              cashOverdue25,
-              goldOverdue40,
-              cashOverdue40,
-              goldOverdue60,
-              cashOverdue60,
-              goldOverdue90,
-              cashOverdue90,
-              goldOverdue90Plus,
-              cashOverdue90Plus,
-            });
-          } catch (error) {
-            console.error(`خطأ في تحديث ${customer.name}:`, error);
-          }
-        } else {
-          processedResults.notFound++;
+          processedResults.found++;
+          processedResults.updated.push({
+            name: customer.name,
+            totalGold,
+            totalCash,
+          });
+        } catch (error) {
+          console.error(`خطأ في تحديث ${customer.name}:`, error);
+          processedResults.errors.push(`خطأ في تحديث: ${customer.name}`);
         }
       }
 
       setResults(processedResults);
-      toast.success(`تم! تحديث ${processedResults.found} عميل`);
+      
+      if (processedResults.found > 0) {
+        toast.success(`✅ تم تحديث ${processedResults.found} عميل بنجاح!`);
+      }
+      
+      if (processedResults.notFound > 0) {
+        toast.warning(`⚠️ ${processedResults.notFound} سطر لم يتم معالجته`);
+      }
+      
+      if (processedResults.errors.length > 0) {
+        console.log("الأخطاء:", processedResults.errors);
+      }
     } catch (error) {
       console.error("خطأ في معالجة Excel:", error);
-      toast.error("حدث خطأ في معالجة الملف");
+      toast.error("حدث خطأ في معالجة الملف. تأكد من صحة البيانات.");
     } finally {
       setIsProcessing(false);
       if (fileInputRef.current) {
@@ -204,6 +214,21 @@ export function OverdueExcelUpdater() {
             <div>🔴 +90 يوم</div>
           </div>
           <p className="text-xs text-blue-700 mt-2">* اكتب الأرقام (جرام للذهب، جنيه للنقدي)</p>
+        </div>
+
+        {/* تعليمات مهمة */}
+        <div className="bg-amber-50 rounded-xl p-4 border border-amber-200">
+          <h4 className="text-sm font-bold text-amber-900 mb-2 flex items-center gap-2">
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+            </svg>
+            تعليمات مهمة
+          </h4>
+          <ul className="text-xs text-amber-800 space-y-1">
+            <li>• يجب أن يتطابق اسم العميل أو رقم الهاتف تماماً</li>
+            <li>• اكتب الأرقام فقط (بدون فواصل أو رموز)</li>
+            <li>• يمكنك ترك الخلايا فارغة إذا لم يكن هناك متأخرات</li>
+          </ul>
         </div>
 
         <button
@@ -256,10 +281,10 @@ export function OverdueExcelUpdater() {
               </svg>
               نتائج التحديث
             </h4>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-3 gap-3 mb-4">
               <div className="bg-blue-50 rounded-lg p-3 text-center border border-blue-200">
                 <p className="text-2xl font-bold text-blue-600">{results.total}</p>
-                <p className="text-xs text-blue-800 mt-1">إجمالي</p>
+                <p className="text-xs text-blue-800 mt-1">إجمالي السطور</p>
               </div>
               <div className="bg-green-50 rounded-lg p-3 text-center border border-green-200">
                 <p className="text-2xl font-bold text-green-600">{results.found}</p>
@@ -267,9 +292,23 @@ export function OverdueExcelUpdater() {
               </div>
               <div className="bg-gray-50 rounded-lg p-3 text-center border border-gray-200">
                 <p className="text-2xl font-bold text-gray-600">{results.notFound}</p>
-                <p className="text-xs text-gray-800 mt-1">غير موجود</p>
+                <p className="text-xs text-gray-800 mt-1">لم يتم العثور عليه</p>
               </div>
             </div>
+
+            {results.errors && results.errors.length > 0 && (
+              <div className="bg-red-50 rounded-lg p-3 border border-red-200">
+                <p className="text-xs font-bold text-red-900 mb-2">⚠️ تفاصيل الأخطاء:</p>
+                <div className="max-h-32 overflow-y-auto space-y-1">
+                  {results.errors.slice(0, 5).map((error: string, idx: number) => (
+                    <p key={idx} className="text-xs text-red-700">• {error}</p>
+                  ))}
+                  {results.errors.length > 5 && (
+                    <p className="text-xs text-red-600 font-semibold">... و {results.errors.length - 5} أخطاء أخرى</p>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

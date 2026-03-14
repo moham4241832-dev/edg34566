@@ -13,6 +13,15 @@ export const getCurrentUser = query({
     }
 
     const user = await ctx.db.get(userId);
+    
+    // إذا المستخدم غير موافق عليه، نرجع معلومات محدودة
+    if (user && !user.isApproved && user.role !== "admin") {
+      return {
+        ...user,
+        needsApproval: true,
+      };
+    }
+    
     return user;
   },
 });
@@ -38,10 +47,11 @@ export const makeFirstAdmin = mutation({
       throw new ConvexError("لديك دور بالفعل: " + (currentUser.role === "admin" ? "مدير النظام" : "موظف مبيعات"));
     }
 
-    // تعيين المستخدم كمدير
+    // تعيين المستخدم كمدير وموافقة تلقائية
     await ctx.db.patch(userId, {
       role: "admin",
       fullName: args.fullName,
+      isApproved: true,
     });
 
     return { success: true };
@@ -112,8 +122,37 @@ export const listAllUsers = query({
       fullName: user.fullName || "غير محدد",
       email: user.email || "غير محدد",
       role: user.role || "لم يتم التعيين",
+      isApproved: user.isApproved || false,
       _creationTime: user._creationTime,
     }));
+  },
+});
+
+// عرض المستخدمين المعلقين (في انتظار الموافقة)
+export const listPendingUsers = query({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw new ConvexError("يجب تسجيل الدخول أولاً");
+    }
+
+    const currentUser = await ctx.db.get(userId);
+    if (!currentUser || currentUser.role !== "admin") {
+      throw new ConvexError("فقط الأدمن يمكنه عرض المستخدمين المعلقين");
+    }
+
+    const allUsers = await ctx.db.query("users").collect();
+    
+    return allUsers
+      .filter((user) => !user.isApproved && user.role !== "admin")
+      .map((user) => ({
+        _id: user._id,
+        fullName: user.fullName || "غير محدد",
+        email: user.email || "غير محدد",
+        role: user.role || "لم يتم التعيين",
+        _creationTime: user._creationTime,
+      }));
   },
 });
 
@@ -140,6 +179,7 @@ export const assignRole = mutation({
       role: args.role,
       fullName: args.fullName,
       viewAllCustomers: args.viewAllCustomers,
+      isApproved: true, // الموافقة التلقائية عند تعيين الدور
     });
 
     return { success: true };
@@ -166,6 +206,52 @@ export const updateViewAllCustomers = mutation({
     await ctx.db.patch(args.userId, {
       viewAllCustomers: args.viewAllCustomers,
     });
+
+    return { success: true };
+  },
+});
+
+// الموافقة على مستخدم (للأدمن فقط)
+export const approveUser = mutation({
+  args: {
+    userId: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    const currentUserId = await getAuthUserId(ctx);
+    if (!currentUserId) {
+      throw new ConvexError("يجب تسجيل الدخول أولاً");
+    }
+
+    const currentUser = await ctx.db.get(currentUserId);
+    if (!currentUser || currentUser.role !== "admin") {
+      throw new ConvexError("فقط الأدمن يمكنه الموافقة على المستخدمين");
+    }
+
+    await ctx.db.patch(args.userId, {
+      isApproved: true,
+    });
+
+    return { success: true };
+  },
+});
+
+// رفض مستخدم (حذفه)
+export const rejectUser = mutation({
+  args: {
+    userId: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    const currentUserId = await getAuthUserId(ctx);
+    if (!currentUserId) {
+      throw new ConvexError("يجب تسجيل الدخول أولاً");
+    }
+
+    const currentUser = await ctx.db.get(currentUserId);
+    if (!currentUser || currentUser.role !== "admin") {
+      throw new ConvexError("فقط الأدمن يمكنه رفض المستخدمين");
+    }
+
+    await ctx.db.delete(args.userId);
 
     return { success: true };
   },

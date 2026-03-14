@@ -72,8 +72,8 @@ export const updateOverdueStatus = mutation({
     cashOverdue60: v.number(),
     goldOverdue90: v.number(),
     cashOverdue90: v.number(),
-    goldOverdue90Plus: v.number(),
-    cashOverdue90Plus: v.number(),
+    goldOverdue90Plus: v.optional(v.number()),
+    cashOverdue90Plus: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
@@ -101,8 +101,8 @@ export const updateOverdueStatus = mutation({
       cashOverdue60: args.cashOverdue60,
       goldOverdue90: args.goldOverdue90,
       cashOverdue90: args.cashOverdue90,
-      goldOverdue90Plus: args.goldOverdue90Plus,
-      cashOverdue90Plus: args.cashOverdue90Plus,
+      goldOverdue90Plus: args.goldOverdue90Plus ?? 0,
+      cashOverdue90Plus: args.cashOverdue90Plus ?? 0,
       lastUpdated: Date.now(),
       importedBy: userId,
     };

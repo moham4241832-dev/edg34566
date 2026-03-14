@@ -180,35 +180,36 @@ export function CustomerManagement() {
     <>
       <div className="bg-gray-900 rounded-3xl shadow-2xl overflow-hidden border-2 border-red-900">
         {/* Header with gradient */}
-        <div className="bg-gradient-to-r from-red-600 via-red-700 to-red-800 p-8 border-b-2 border-red-900">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-white/20 backdrop-blur-lg rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform">
+        <div className="bg-gradient-to-r from-red-600 via-red-700 to-red-800 p-4 sm:p-6 md:p-8 border-b-2 border-red-900">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-white/20 backdrop-blur-lg rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg">
                 <CustomerIcon />
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-white mb-1">إدارة العملاء</h3>
-                <p className="text-red-100 text-sm">إضافة وتعديل بيانات العملاء</p>
+                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-0.5 sm:mb-1">إدارة العملاء</h3>
+                <p className="text-red-100 text-xs sm:text-sm">إضافة وتعديل بيانات العملاء</p>
               </div>
             </div>
 
             {!isAdding && isAdmin && (
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
               <button
                 onClick={() => setIsAdding(true)}
-              className="px-6 py-3 bg-gradient-to-r from-amber-600 to-yellow-700 text-white font-bold rounded-xl hover:from-amber-700 hover:to-yellow-800 transition-all shadow-lg hover:shadow-xl flex items-center gap-2 border-2 border-amber-900"
+              className="px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-amber-600 to-yellow-700 text-white font-bold rounded-lg sm:rounded-xl hover:from-amber-700 hover:to-yellow-800 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 border-2 border-amber-900 text-sm sm:text-base"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
-              إضافة عميل جديد
+              <span className="hidden sm:inline">إضافة عميل جديد</span>
+              <span className="sm:hidden">إضافة عميل</span>
             </button>
               
               <button
                 onClick={handleDeleteAll}
-                className="px-6 py-3 bg-gradient-to-r from-red-500 to-rose-600 text-white font-bold rounded-xl hover:from-red-600 hover:to-rose-700 transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
+                className="px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-red-500 to-rose-600 text-white font-bold rounded-lg sm:rounded-xl hover:from-red-600 hover:to-rose-700 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 text-sm sm:text-base"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
                 مسح الكل
@@ -219,9 +220,9 @@ export function CustomerManagement() {
         </div>
 
         {/* Content Area */}
-        <div className="p-8 bg-gray-900">
+        <div className="p-4 sm:p-6 md:p-8 bg-gray-900">
           {isAdding && (
-          <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 mb-6 border-2 border-red-900 shadow-lg">
+          <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6 border-2 border-red-900 shadow-lg">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-red-800 rounded-xl flex items-center justify-center border-2 border-red-900">
                 <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -357,16 +358,16 @@ export function CustomerManagement() {
             </div>
           )}
 
-        <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl p-6 border border-gray-200 shadow-inner">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center">
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-200 shadow-inner">
+          <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
             </div>
             <div>
-              <h4 className="text-xl font-bold text-gray-900">📋 قائمة العملاء</h4>
-              <p className="text-sm text-gray-600">
+              <h4 className="text-base sm:text-lg md:text-xl font-bold text-gray-900">📋 قائمة العملاء</h4>
+              <p className="text-xs sm:text-sm text-gray-600">
                 <span className="font-bold text-blue-600">{filteredCustomers.length}</span> من {customers.length} عميل
               </p>
             </div>
@@ -379,12 +380,12 @@ export function CustomerManagement() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="🔍 ابحث بالاسم أو الهاتف..."
-              className="w-full px-4 py-3 rounded-lg border-2 border-blue-200 focus:border-blue-500 text-start bg-white text-gray-900 text-base"
+              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border-2 border-blue-200 focus:border-blue-500 text-start bg-white text-gray-900 text-sm sm:text-base"
             />
             <select
               value={selectedRegion}
               onChange={(e) => setSelectedRegion(e.target.value)}
-              className="w-full px-4 py-3 rounded-lg border-2 border-purple-200 focus:border-purple-500 text-start bg-white text-gray-900 text-base"
+              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border-2 border-purple-200 focus:border-purple-500 text-start bg-white text-gray-900 text-sm sm:text-base"
             >
               <option value="all">📍 جميع المناطق</option>
               {uniqueRegions.map(region => (
@@ -395,14 +396,14 @@ export function CustomerManagement() {
 
           {filteredCustomers.length === 0 ? (
             <div className="text-center py-8">
-              <svg className="w-16 h-16 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
-              <p className="text-lg font-semibold text-gray-900">لا يوجد عملاء بعد</p>
-              <p className="text-sm text-gray-600 mt-1">ابدأ بإضافة أول عميل</p>
+              <p className="text-base sm:text-lg font-semibold text-gray-900">لا يوجد عملاء بعد</p>
+              <p className="text-xs sm:text-sm text-gray-600 mt-1">ابدأ بإضافة أول عميل</p>
             </div>
           ) : (
-            <div className="space-y-3 max-h-[600px] overflow-y-auto">
+            <div className="space-y-2.5 sm:space-y-3 max-h-[500px] sm:max-h-[600px] overflow-y-auto px-1">
               {filteredCustomers.map((customer) => {
                 const salesPerson = salespeople.find(sp => sp._id === customer.salesPersonId);
                 const creditLimit = customer.creditLimit || 0;
@@ -482,7 +483,7 @@ export function CustomerManagement() {
                         <div className="flex gap-1.5 sm:gap-2 flex-shrink-0">
                           <button
                           onClick={() => handleEdit(customer)}
-                          className="p-2 sm:p-2.5 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all shadow-md hover:shadow-lg transform hover:scale-110"
+                          className="p-1.5 sm:p-2 md:p-2.5 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-lg sm:rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all shadow-md hover:shadow-lg active:scale-95 sm:hover:scale-110"
                           title="تعديل"
                         >
                           <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -491,10 +492,10 @@ export function CustomerManagement() {
                         </button>
                         <button
                           onClick={() => handleDelete(customer._id)}
-                          className="p-2.5 bg-gradient-to-br from-red-500 to-rose-600 text-white rounded-xl hover:from-red-600 hover:to-rose-700 transition-all shadow-md hover:shadow-lg transform hover:scale-110"
+                          className="p-1.5 sm:p-2 md:p-2.5 bg-gradient-to-br from-red-500 to-rose-600 text-white rounded-lg sm:rounded-xl hover:from-red-600 hover:to-rose-700 transition-all shadow-md hover:shadow-lg active:scale-95 sm:hover:scale-110"
                           title="حذف"
                         >
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-4 h-4 sm:w-4.5 sm:h-4.5 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                           </svg>
                         </button>

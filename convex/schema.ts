@@ -10,9 +10,11 @@ const customAuthTables = {
     fullName: v.optional(v.string()),
     role: v.optional(v.union(v.literal("admin"), v.literal("salesperson"))),
     viewAllCustomers: v.optional(v.boolean()), // السماح للموظف برؤية جميع العملاء
+    isApproved: v.optional(v.boolean()), // موافقة المدير على الحساب
   })
     .index("email", ["email"])
-    .index("phone", ["phone"]),
+    .index("phone", ["phone"])
+    .index("by_approval", ["isApproved"]),
 };
 
 const applicationTables = {
@@ -45,16 +47,16 @@ const applicationTables = {
 
   overdueStatus: defineTable({
     customerId: v.id("customers"),
-    goldOverdue25: v.union(v.number(), v.boolean()),
-    cashOverdue25: v.union(v.number(), v.boolean()),
-    goldOverdue40: v.union(v.number(), v.boolean()),
-    cashOverdue40: v.union(v.number(), v.boolean()),
-    goldOverdue60: v.union(v.number(), v.boolean()),
-    cashOverdue60: v.union(v.number(), v.boolean()),
-    goldOverdue90: v.union(v.number(), v.boolean()),
-    cashOverdue90: v.union(v.number(), v.boolean()),
-    goldOverdue90Plus: v.optional(v.union(v.number(), v.boolean())),
-    cashOverdue90Plus: v.optional(v.union(v.number(), v.boolean())),
+    goldOverdue25: v.number(),
+    cashOverdue25: v.number(),
+    goldOverdue40: v.number(),
+    cashOverdue40: v.number(),
+    goldOverdue60: v.number(),
+    cashOverdue60: v.number(),
+    goldOverdue90: v.number(),
+    cashOverdue90: v.number(),
+    goldOverdue90Plus: v.optional(v.number()),
+    cashOverdue90Plus: v.optional(v.number()),
     lastUpdated: v.number(),
     importedBy: v.id("users"),
   })
